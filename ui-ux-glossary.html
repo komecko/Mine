@@ -3,20 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>デザイン用語 ビジュアル図鑑 | Interactive UI/UX Glossary</title>
+<title>デザイン用語 ビジュアル図鑑 v18 | Interactive UI/UX Glossary</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>
-  html,body{margin:0;padding:0;background:#0a0a0f;min-height:100vh}
-  #root{min-height:100vh}
-</style>
+<style>html,body{margin:0;padding:0;background:#0a0a0f;min-height:100vh}#root{min-height:100vh}</style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useRef, useEffect, useCallback } = React;
-
 
 /* ─── GLOBAL CSS ─── */
 const G = `
@@ -65,6 +61,22 @@ const G = `
   ::-webkit-scrollbar-track{background:#14141c}
   ::-webkit-scrollbar-thumb{background:#303048;border-radius:4px}
 `;
+
+/* ── ErrorBoundary ── */
+class ErrorBoundary extends React.Component {
+  constructor(props){super(props);this.state={err:null};}
+  static getDerivedStateFromError(e){return{err:e};}
+  componentDidCatch(e){console.error("Component error:",e.message);}
+  render(){
+    if(this.state.err)return(
+      <div style={{color:"#ef4444",fontSize:11,padding:"8px 10px",background:"#1a0808",borderRadius:6}}>
+        ⚠ レンダーエラー: {this.state.err.message}
+      </div>
+    );
+    return this.props.children;
+  }
+}
+
 
 /* ─── CATEGORIES ─── */
 const CATS = [
@@ -6761,6 +6773,1132 @@ function FireworksDemo(){
 /* ══════════════════════════════════════════════
    REGISTRY — 再カテゴリー版
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   🆕  NEW COMPONENTS v16
+══════════════════════════════════════════════ */
+
+function InfiniteScrollDemo(){
+  const [items,setItems]=useState(Array.from({length:8},(_,i)=>i+1));
+  const [loading,setLoading]=useState(false);
+  const loaderRef=useRef(null);
+  const loadMore=useCallback(()=>{
+    if(loading)return;
+    setLoading(true);
+    setTimeout(()=>{setItems(p=>[...p,...Array.from({length:5},(_,i)=>p.length+i+1)]);setLoading(false);},1200);
+  },[loading]);
+  useEffect(()=>{
+    const obs=new IntersectionObserver(es=>{if(es[0].isIntersecting)loadMore();},{threshold:0.1});
+    if(loaderRef.current)obs.observe(loaderRef.current);
+    return()=>obs.disconnect();
+  },[loadMore]);
+  return(<div style={{height:180,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
+    {items.map(n=>(<div key={n} style={{background:"#151520",borderRadius:8,padding:"9px 12px",
+      display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+      <div style={{width:30,height:30,borderRadius:"50%",background:"#818cf822",
+        display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,color:"#818cf8"}}>{n}</div>
+      <div><div style={{fontSize:12,fontWeight:600,color:"#e5e7eb"}}>アイテム {n}</div>
+        <div style={{fontSize:10,color:"#4b5563"}}>スクロールで自動読み込み</div></div>
+    </div>))}
+    <div ref={loaderRef} style={{padding:8,textAlign:"center",flexShrink:0}}>
+      {loading&&<div style={{width:18,height:18,border:"2px solid #818cf844",borderTop:"2px solid #818cf8",
+        borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto"}}/>}
+    </div>
+  </div>);
+}
+
+function SkeletonVariantsDemo(){
+  const [type,setType]=useState("article");
+  const S=({w="100%",h=12,r=4,mb=8})=>(<div style={{width:w,height:h,borderRadius:r,
+    background:"linear-gradient(90deg,#1a1a2e 25%,#252538 50%,#1a1a2e 75%)",
+    backgroundSize:"400% 100%",animation:"shimmer 1.5s infinite",marginBottom:mb}}/>);
+  return(<div>
+    <div style={{display:"flex",gap:6,marginBottom:12}}>
+      {["article","profile","feed"].map(t=>(
+        <button key={t} onClick={()=>setType(t)} style={{padding:"3px 10px",fontSize:11,borderRadius:5,
+          border:"none",cursor:"pointer",fontFamily:"inherit",
+          background:type===t?"#818cf8":"#1a1a2e",color:type===t?"#fff":"#555",fontWeight:type===t?700:400}}>
+          {t}</button>
+      ))}
+    </div>
+    {type==="article"&&<div><S h={18} r={6} mb={10}/><S w="80%" h={14} r={6} mb={16}/>
+      <S h={10} mb={6}/><S h={10} mb={6}/><S w="70%" h={10} mb={6}/></div>}
+    {type==="profile"&&<div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+      <div style={{width:52,height:52,borderRadius:"50%",background:"linear-gradient(90deg,#1a1a2e 25%,#252538 50%,#1a1a2e 75%)",
+        backgroundSize:"400% 100%",animation:"shimmer 1.5s infinite",flexShrink:0}}/>
+      <div style={{flex:1}}><S w="60%" h={14} r={6} mb={8}/><S w="40%" h={10} r={4} mb={8}/><S h={10} mb={0}/></div>
+    </div>}
+    {type==="feed"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+      {[1,2].map(i=><div key={i} style={{display:"flex",gap:10}}>
+        <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(90deg,#1a1a2e 25%,#252538 50%,#1a1a2e 75%)",
+          backgroundSize:"400% 100%",animation:"shimmer 1.5s infinite",flexShrink:0}}/>
+        <div style={{flex:1}}><S w="50%" h={11} r={4} mb={6}/><S h={9} mb={0}/></div>
+      </div>)}
+    </div>}
+  </div>);
+}
+
+function DarkModeToggleDemo(){
+  const [mode,setMode]=useState("system");
+  const modes=[{id:"light",e:"☀️",l:"ライト"},{id:"system",e:"💻",l:"システム"},{id:"dark",e:"🌙",l:"ダーク"}];
+  const bg=mode==="light"?"#f8fafc":mode==="dark"?"#0f0f1a":"#1a1a2e";
+  const fg=mode==="light"?"#1e293b":"#e2e8f0";
+  return(<div>
+    <div style={{display:"flex",background:"#111",borderRadius:10,padding:3,gap:2,marginBottom:12,width:"fit-content"}}>
+      {modes.map(m=>(<button key={m.id} onClick={()=>setMode(m.id)} style={{
+        padding:"6px 12px",borderRadius:7,border:"none",cursor:"pointer",fontFamily:"inherit",
+        fontSize:11,fontWeight:600,transition:"all .2s",
+        background:mode===m.id?"#818cf8":"transparent",color:mode===m.id?"#fff":"#666"}}>
+        {m.e} {m.l}</button>))}
+    </div>
+    <div style={{borderRadius:10,padding:14,background:bg,transition:"all .3s",border:"1px solid #ffffff11"}}>
+      <div style={{fontSize:13,fontWeight:700,color:fg,marginBottom:4}}>プレビュー</div>
+      <div style={{fontSize:11,color:mode==="light"?"#64748b":"#94a3b8"}}>テーマ: {modes.find(m=>m.id===mode)?.l}</div>
+    </div>
+  </div>);
+}
+
+function ImageCropperDemo(){
+  const [pos,setPos]=useState({x:20,y:20,w:120,h:80});
+  const dragging=useRef(null);
+  const onMD=(e,type)=>{e.preventDefault();dragging.current={type,startX:e.clientX,startY:e.clientY,...pos};};
+  const onMM=e=>{
+    if(!dragging.current)return;
+    const dx=e.clientX-dragging.current.startX,dy=e.clientY-dragging.current.startY;
+    if(dragging.current.type==="move")
+      setPos(p=>({...p,x:Math.max(0,Math.min(180,dragging.current.x+dx)),y:Math.max(0,Math.min(100,dragging.current.y+dy))}));
+    else
+      setPos(p=>({...p,w:Math.max(40,dragging.current.w+dx),h:Math.max(30,dragging.current.h+dy)}));
+  };
+  return(<div>
+    <div style={{position:"relative",height:150,background:"linear-gradient(135deg,#1a1a2e,#16213e)",
+      borderRadius:8,overflow:"hidden",cursor:"crosshair",userSelect:"none"}}
+      onMouseMove={onMM} onMouseUp={()=>dragging.current=null} onMouseLeave={()=>dragging.current=null}>
+      <div style={{position:"absolute",inset:0,display:"grid",gridTemplateColumns:"repeat(4,1fr)",gridTemplateRows:"repeat(3,1fr)"}}>
+        {Array.from({length:12}).map((_,i)=><div key={i} style={{background:i%2?"#1a1a2e":"#151525"}}/>)}
+      </div>
+      <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.55)"}}/>
+      <div style={{position:"absolute",left:pos.x,top:pos.y,width:pos.w,height:pos.h,
+        border:"2px solid #818cf8",cursor:"move",boxShadow:"0 0 0 9999px rgba(0,0,0,0.45)"}}
+        onMouseDown={e=>onMD(e,"move")}>
+        {[[0,0],[100,0],[0,100],[100,100]].map(([rx,ry],i)=>(
+          <div key={i} style={{position:"absolute",width:8,height:8,background:"#818cf8",borderRadius:1,
+            left:rx===0?-4:"calc(100% - 4px)",top:ry===0?-4:"calc(100% - 4px)",cursor:"se-resize"}}
+            onMouseDown={e=>{e.stopPropagation();onMD(e,"resize");}}/>
+        ))}
+        {[33,66].map(p=>[
+          <div key={"h"+p} style={{position:"absolute",left:0,right:0,top:p+"%",height:1,background:"rgba(255,255,255,0.2)"}}/>,
+          <div key={"v"+p} style={{position:"absolute",top:0,bottom:0,left:p+"%",width:1,background:"rgba(255,255,255,0.2)"}}/>
+        ])}
+      </div>
+    </div>
+    <div style={{marginTop:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <span style={{fontSize:11,color:"#4b5563"}}>{Math.round(pos.w)}×{Math.round(pos.h)}px</span>
+      <Btn small>切り抜きを適用</Btn>
+    </div>
+  </div>);
+}
+
+function RichTextEditorDemo(){
+  const ref=useRef(null);
+  const exec=cmd=>{document.execCommand(cmd,false,null);ref.current?.focus();};
+  const tools=[
+    {cmd:"bold",l:"B",s:{fontWeight:700,fontFamily:"serif"}},
+    {cmd:"italic",l:"I",s:{fontStyle:"italic",fontFamily:"serif"}},
+    {cmd:"underline",l:"U",s:{textDecoration:"underline",fontFamily:"serif"}},
+    {cmd:"strikeThrough",l:"S",s:{textDecoration:"line-through",fontFamily:"serif"}},
+  ];
+  return(<div style={{border:"1px solid #1e1e30",borderRadius:8,overflow:"hidden"}}>
+    <div style={{background:"#111",padding:"6px 8px",display:"flex",gap:4,flexWrap:"wrap",borderBottom:"1px solid #1e1e30"}}>
+      {tools.map(t=>(<button key={t.cmd} onClick={()=>exec(t.cmd)} style={{
+        width:26,height:26,background:"#1a1a2e",border:"1px solid #2a2a40",borderRadius:4,
+        color:"#e5e7eb",cursor:"pointer",fontSize:12,...t.s}}>{t.l}</button>))}
+      <div style={{width:1,background:"#2a2a40",margin:"0 2px"}}/>
+      {[{cmd:"insertUnorderedList",l:"≡"},{cmd:"insertOrderedList",l:"1."}].map(t=>(
+        <button key={t.cmd} onClick={()=>exec(t.cmd)} style={{height:26,padding:"0 6px",background:"#1a1a2e",
+          border:"1px solid #2a2a40",borderRadius:4,color:"#e5e7eb",cursor:"pointer",fontSize:12}}>{t.l}</button>
+      ))}
+    </div>
+    <div ref={ref} contentEditable suppressContentEditableWarning
+      style={{padding:10,minHeight:60,fontSize:12,color:"#d1d5db",outline:"none",lineHeight:1.7}}
+      dangerouslySetInnerHTML={{__html:"ここに<b>テキスト</b>を入力。<br/>ツールバーで<i>書式</i>を変更できます。"}}/>
+  </div>);
+}
+
+function StoriesUIDemo(){
+  const stories=[
+    {u:"🎨",n:"デザイン",c:"#818cf8",content:"UIのトレンド2025"},
+    {u:"💻",n:"コード",c:"#34d399",content:"新機能リリース"},
+    {u:"🚀",n:"プロダクト",c:"#f472b6",content:"v2.0 公開"},
+    {u:"📊",n:"データ",c:"#fb923c",content:"月次レポート"},
+  ];
+  const [viewing,setViewing]=useState(null);
+  const [progress,setProgress]=useState(0);
+  useEffect(()=>{
+    if(viewing===null)return;
+    setProgress(0);
+    const t=setInterval(()=>setProgress(p=>{
+      if(p>=100){clearInterval(t);setTimeout(()=>setViewing(v=>v!==null&&v<stories.length-1?v+1:null),100);return 100;}
+      return p+2;
+    }),60);
+    return()=>clearInterval(t);
+  },[viewing]);
+  if(viewing!==null){const s=stories[viewing];return(
+    <div style={{position:"relative",background:s.c+"22",borderRadius:10,padding:16,
+      border:`1px solid ${s.c}44`,minHeight:110,display:"flex",flexDirection:"column"}}>
+      <div style={{display:"flex",gap:4,marginBottom:12}}>
+        {stories.map((_,i)=>(<div key={i} style={{flex:1,height:3,borderRadius:2,background:"#ffffff22",overflow:"hidden"}}>
+          <div style={{height:"100%",background:s.c,
+            width:i<viewing?"100%":i===viewing?progress+"%":"0%",transition:"width .05s linear"}}/>
+        </div>))}
+      </div>
+      <div style={{fontSize:11,color:"#aaa",marginBottom:8}}>{s.u} {s.n}</div>
+      <div style={{fontSize:22,fontWeight:800,color:"#fff",flex:1,display:"flex",alignItems:"center"}}>{s.content}</div>
+      <button onClick={()=>setViewing(null)} style={{position:"absolute",top:16,right:16,
+        background:"none",border:"none",color:"#fff",fontSize:16,cursor:"pointer"}}>✕</button>
+    </div>
+  );}
+  return(<div style={{display:"flex",gap:10}}>
+    {stories.map((s,i)=>(<div key={i} onClick={()=>setViewing(i)} style={{textAlign:"center",cursor:"pointer"}}>
+      <div style={{width:48,height:48,borderRadius:"50%",border:`2px solid ${s.c}`,
+        display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:4,background:s.c+"22"}}>
+        {s.u}
+      </div>
+      <div style={{fontSize:10,color:"#9ca3af"}}>{s.n}</div>
+    </div>))}
+  </div>);
+}
+
+function QRCodeDemo(){
+  const [text,setText]=useState("https://example.com");
+  const seed=text.split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const cells=Array.from({length:25},(_,i)=>((seed*i*37+i*13)%100)>45);
+  const isF=(r,c)=>(r<3&&c<3)||(r<3&&c>4)||(r>4&&c<3);
+  return(<div>
+    <input value={text} onChange={e=>setText(e.target.value)}
+      style={{width:"100%",background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",
+        borderRadius:6,padding:"6px 10px",fontSize:12,fontFamily:"inherit",marginBottom:10,boxSizing:"border-box"}}
+      placeholder="URLを入力"/>
+    <div style={{display:"flex",gap:16,alignItems:"center"}}>
+      <div style={{background:"#fff",padding:8,borderRadius:6,display:"inline-block"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(5,10px)",gap:1}}>
+          {cells.map((on,i)=>{const r=Math.floor(i/5),c=i%5;
+            return<div key={i} style={{width:10,height:10,background:isF(r,c)?"#000":on?"#000":"#fff",borderRadius:1}}/>;
+          })}
+        </div>
+      </div>
+      <div style={{fontSize:11,color:"#6b7280"}}>入力に応じてパターンが変化</div>
+    </div>
+  </div>);
+}
+
+function TableOfContentsDemo(){
+  const sections=["はじめに","背景と目的","デザイン原則","コンポーネント設計","まとめ"];
+  const [active,setActive]=useState(0);
+  useEffect(()=>{const t=setInterval(()=>setActive(a=>(a+1)%sections.length),2000);return()=>clearInterval(t);},[]);
+  return(<div style={{display:"flex",gap:12}}>
+    <div style={{width:120,flexShrink:0}}>
+      <div style={{fontSize:9,letterSpacing:2,color:"#4b5563",marginBottom:8,textTransform:"uppercase"}}>目次</div>
+      {sections.map((s,i)=>(<div key={i} onClick={()=>setActive(i)} style={{
+        display:"flex",alignItems:"center",gap:6,padding:"5px 0 5px 8px",cursor:"pointer",
+        borderLeft:`2px solid ${i===active?"#818cf8":"#1e1e30"}`,transition:"all .2s"}}>
+        <span style={{fontSize:11,color:i===active?"#818cf8":"#4b5563",fontWeight:i===active?700:400}}>{s}</span>
+      </div>))}
+    </div>
+    <div style={{flex:1,background:"#111",borderRadius:8,padding:12}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#e5e7eb",marginBottom:6}}>{sections[active]}</div>
+      <div style={{height:4,background:"#1e1e30",borderRadius:2,marginBottom:6}}>
+        <div style={{height:"100%",width:(active+1)/sections.length*100+"%",background:"#818cf8",
+          borderRadius:2,transition:"width .3s"}}/>
+      </div>
+      <div style={{fontSize:11,color:"#4b5563"}}>セクション {active+1} / {sections.length}</div>
+    </div>
+  </div>);
+}
+
+function NotificationCenterDemo(){
+  const [open,setOpen]=useState(false);
+  const [notifs,setNotifs]=useState([
+    {id:1,icon:"💬",title:"新しいコメント",body:"デザインレビューに返信がありました",time:"2分前",read:false},
+    {id:2,icon:"👍",title:"いいね",body:"あなたの投稿が10いいねを獲得",time:"15分前",read:false},
+    {id:3,icon:"🚀",title:"デプロイ完了",body:"本番環境への反映が完了しました",time:"1時間前",read:true},
+    {id:4,icon:"⚠️",title:"ストレージ警告",body:"使用量が80%に達しました",time:"3時間前",read:true},
+  ]);
+  const unread=notifs.filter(n=>!n.read).length;
+  return(<div style={{position:"relative"}}>
+    <button onClick={()=>setOpen(o=>!o)} style={{position:"relative",background:"#1a1a2e",
+      border:"1px solid #2a2a40",borderRadius:8,padding:"8px 14px",cursor:"pointer",color:"#e5e7eb",
+      fontSize:13,display:"flex",alignItems:"center",gap:8,fontFamily:"inherit"}}>
+      🔔 通知センター
+      {unread>0&&<span style={{background:"#f472b6",color:"#fff",fontSize:10,fontWeight:700,
+        borderRadius:10,padding:"1px 6px"}}>{unread}</span>}
+    </button>
+    {open&&<div style={{position:"absolute",top:"calc(100% + 6px)",left:0,width:250,
+      background:"#12121f",border:"1px solid #1e1e30",borderRadius:10,
+      boxShadow:"0 8px 32px rgba(0,0,0,0.5)",zIndex:50,overflow:"hidden"}}>
+      <div style={{padding:"10px 14px",borderBottom:"1px solid #1e1e30",display:"flex",
+        justifyContent:"space-between",alignItems:"center"}}>
+        <span style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>通知</span>
+        <button onClick={()=>setNotifs(n=>n.map(x=>({...x,read:true})))}
+          style={{background:"none",border:"none",color:"#818cf8",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
+          すべて既読</button>
+      </div>
+      <div style={{maxHeight:180,overflowY:"auto"}}>
+        {notifs.map(n=>(<div key={n.id}
+          onClick={()=>setNotifs(ns=>ns.map(x=>x.id===n.id?{...x,read:true}:x))}
+          style={{padding:"10px 14px",borderBottom:"1px solid #0e0e18",cursor:"pointer",
+            background:n.read?"transparent":"#818cf808",display:"flex",gap:10,alignItems:"flex-start"}}>
+          <span style={{fontSize:18,flexShrink:0}}>{n.icon}</span>
+          <div style={{flex:1}}>
+            <div style={{fontSize:11,fontWeight:700,color:n.read?"#9ca3af":"#e5e7eb",marginBottom:2}}>{n.title}</div>
+            <div style={{fontSize:10,color:"#4b5563"}}>{n.body}</div>
+            <div style={{fontSize:9,color:"#374151",marginTop:3}}>{n.time}</div>
+          </div>
+          {!n.read&&<div style={{width:7,height:7,borderRadius:"50%",background:"#818cf8",flexShrink:0,marginTop:4}}/>}
+        </div>))}
+      </div>
+    </div>}
+  </div>);
+}
+
+function BeforeAfterDemo(){
+  const [pos,setPos]=useState(50);
+  const ref=useRef(null);
+  const dragging=useRef(false);
+  const upd=e=>{
+    if(!ref.current)return;
+    const r=ref.current.getBoundingClientRect();
+    setPos(Math.max(2,Math.min(98,((e.clientX-r.left)/r.width)*100)));
+  };
+  return(<div ref={ref} style={{position:"relative",height:120,borderRadius:10,
+    overflow:"hidden",cursor:"col-resize",userSelect:"none",background:"#0d0d1a"}}
+    onMouseMove={e=>{if(dragging.current)upd(e);}}
+    onMouseDown={e=>{dragging.current=true;upd(e);}}
+    onMouseUp={()=>{dragging.current=false;}}
+    onMouseLeave={()=>{dragging.current=false;}}>
+    <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",
+      background:"linear-gradient(135deg,#1a1a2e,#0d0d1a)",
+      display:"flex",alignItems:"center",paddingLeft:24}}>
+      <div>
+        <div style={{fontSize:11,color:"#9ca3af",marginBottom:4}}>BEFORE</div>
+        <div style={{fontSize:18,fontWeight:800,color:"#9ca3af"}}>旧デザイン</div>
+      </div>
+    </div>
+    <div style={{position:"absolute",top:0,left:0,width:pos+"%",height:"100%",overflow:"hidden",
+      minWidth:0}}>
+      <div style={{position:"absolute",top:0,left:0,width:"300px",height:"100%",
+        background:"linear-gradient(135deg,#1a0d2e,#0d0820)",
+        display:"flex",alignItems:"center",justifyContent:"flex-end",paddingRight:24}}>
+        <div style={{textAlign:"right"}}>
+          <div style={{fontSize:11,color:"#818cf8",marginBottom:4}}>AFTER</div>
+          <div style={{fontSize:18,fontWeight:800,color:"#818cf8"}}>新デザイン</div>
+        </div>
+      </div>
+    </div>
+    <div style={{position:"absolute",top:0,bottom:0,left:pos+"%",transform:"translateX(-50%)",
+      width:2,background:"#818cf8",zIndex:10}}>
+      <div style={{position:"absolute",top:"50%",left:"50%",
+        transform:"translate(-50%,-50%)",width:28,height:28,borderRadius:"50%",
+        background:"#818cf8",border:"2px solid #fff",
+        display:"flex",alignItems:"center",justifyContent:"center",
+        color:"#fff",fontSize:12,fontWeight:700}}>⇔</div>
+    </div>
+  </div>);
+}
+
+function VoiceInputDemo(){
+  const [state,setState]=useState("idle");
+  const [text,setText]=useState("");
+  const phrases=["UIデザインについて調べたい","プロフィールを更新して","設定を開いて"];
+  const [pi,setPi]=useState(0);
+  const start=()=>{
+    setState("listening");let i=0,t=phrases[pi];
+    const iv=setInterval(()=>{setText(t.slice(0,++i));if(i>=t.length){clearInterval(iv);setState("done");}},80);
+  };
+  return(<div style={{textAlign:"center"}}>
+    <div style={{marginBottom:12,minHeight:32,padding:"6px 12px",background:"#111",borderRadius:8,fontSize:12,color:"#e5e7eb"}}>
+      {state==="idle"&&<span style={{color:"#4b5563"}}>マイクを押して話す...</span>}
+      {state==="listening"&&<span>{text}<span style={{animation:"pulseOp 0.8s infinite"}}>|</span></span>}
+      {state==="done"&&<span style={{color:"#34d399"}}>✓ {text}</span>}
+    </div>
+    <button onClick={()=>{if(state==="done"){setPi(p=>(p+1)%phrases.length);setState("idle");setText("");}else start();}}
+      style={{width:52,height:52,borderRadius:"50%",border:"none",cursor:"pointer",
+        background:state==="listening"?"#ef4444":state==="done"?"#34d399":"#818cf8",
+        fontSize:20,transition:"all .2s",
+        boxShadow:state==="listening"?"0 0 0 8px rgba(239,68,68,0.2)":"none"}}>
+      {state==="listening"?"■":state==="done"?"↺":"🎙️"}
+    </button>
+    {state==="listening"&&<div style={{display:"flex",justifyContent:"center",gap:3,marginTop:10}}>
+      {[1,2,3,4,5].map(i=>(<div key={i} style={{width:4,background:"#818cf8",borderRadius:2,
+        height:8+i*4,animation:`waveBar ${0.5+i*0.1}s ease-in-out infinite`}}/>))}
+    </div>}
+  </div>);
+}
+
+function SwipeCardsDemo(){
+  const base=[
+    {emoji:"🎨",title:"UIデザイン",sub:"Figma・デザインシステム",c:"#818cf8"},
+    {emoji:"💻",title:"フロントエンド",sub:"React・TypeScript",c:"#34d399"},
+    {emoji:"🚀",title:"プロダクト",sub:"ロードマップ・OKR",c:"#f472b6"},
+    {emoji:"📊",title:"データ分析",sub:"Tableau・SQL",c:"#fb923c"},
+  ];
+  const [stack,setStack]=useState(base);
+  const [drag,setDrag]=useState({x:0,dragging:false,startX:0});
+  const [gone,setGone]=useState("");
+  const dismiss=d=>{setGone(d);setTimeout(()=>{setStack(s=>s.slice(0,-1));setDrag({x:0,dragging:false,startX:0});setGone("");},280);};
+  if(!stack.length)return(<div style={{textAlign:"center",padding:20}}>
+    <div style={{fontSize:24,marginBottom:8}}>✓</div>
+    <div style={{fontSize:12,color:"#6b7280",marginBottom:10}}>全部スワイプ！</div>
+    <Btn small onClick={()=>setStack(base)}>リセット</Btn>
+  </div>);
+  const dir=drag.x>30?"right":drag.x<-30?"left":"";
+  return(<div style={{textAlign:"center"}}>
+    <div style={{position:"relative",height:120,marginBottom:10}}>
+      {stack.slice(-3).map((c,i,arr)=>{
+        const isTop=i===arr.length-1;const off=(arr.length-1-i)*4;
+        const tx=isTop?(gone?(gone==="right"?200:-200):drag.x):0;
+        const rot=isTop?drag.x*0.08:0;
+        return(<div key={c.title} style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div onMouseDown={isTop?e=>setDrag({x:0,dragging:true,startX:e.clientX}):null}
+            onMouseMove={isTop&&drag.dragging?e=>setDrag(d=>({...d,x:e.clientX-d.startX})):null}
+            onMouseUp={isTop?()=>{Math.abs(drag.x)>50?dismiss(drag.x>0?"right":"left"):setDrag({x:0,dragging:false,startX:0});}:null}
+            style={{width:"90%",padding:"12px 16px",borderRadius:12,
+              background:`linear-gradient(135deg,#111118,#0d0d16)`,boxShadow:`0 2px 16px ${c.c}33`,
+              border:`1px solid ${c.c}44`,cursor:isTop?"grab":"default",
+              transform:`translateX(${tx}px) rotate(${rot}deg) scale(${1-off*0.015})`,
+              transition:gone&&isTop?"transform .28s ease-out,opacity .28s":!drag.dragging?"transform .15s":"none",
+              opacity:gone&&isTop?0:1,userSelect:"none"}}>
+            <div style={{fontSize:24,marginBottom:4}}>{c.emoji}</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#e5e7eb"}}>{c.title}</div>
+            <div style={{fontSize:10,color:"#6b7280"}}>{c.sub}</div>
+          </div>
+        </div>);
+      })}
+      {dir&&<div style={{position:"absolute",top:8,left:dir==="right"?undefined:8,right:dir==="right"?8:undefined,
+        background:dir==="right"?"#34d399":"#ef4444",color:"#fff",fontSize:10,fontWeight:700,
+        borderRadius:4,padding:"2px 8px",opacity:Math.min(1,Math.abs(drag.x)/60),zIndex:20}}>
+        {dir==="right"?"👍 いいね":"👎 スキップ"}
+      </div>}
+    </div>
+    <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+      <button onClick={()=>dismiss("left")} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #ef444444",
+        background:"#ef444411",color:"#ef4444",cursor:"pointer",fontSize:16}}>✕</button>
+      <button onClick={()=>dismiss("right")} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #34d39944",
+        background:"#34d39911",color:"#34d399",cursor:"pointer",fontSize:16}}>♥</button>
+    </div>
+  </div>);
+}
+
+function VideoPlayerDemo(){
+  const [playing,setPlaying]=useState(false);
+  const [progress,setProgress]=useState(23);
+  const [vol,setVol]=useState(70);
+  const [muted,setMuted]=useState(false);
+  useEffect(()=>{
+    if(!playing)return;
+    const t=setInterval(()=>{
+      setProgress(p=>{
+        if(p>=100){return 0;}
+        return p+0.5;
+      });
+    },200);
+    return()=>clearInterval(t);
+  },[playing]);
+  useEffect(()=>{if(progress>=100)setPlaying(false);},[progress]);
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+  const dur=234,cur=Math.round(progress/100*dur);
+  return(<div style={{background:"#000",borderRadius:10,overflow:"hidden"}}>
+    <div style={{height:90,background:"linear-gradient(135deg,#0d0820,#1a1a2e)",
+      display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+      <div style={{fontSize:36,opacity:0.2}}>🎬</div>
+      {!playing&&<button onClick={()=>setPlaying(true)} style={{position:"absolute",width:44,height:44,
+        borderRadius:"50%",border:"none",background:"rgba(255,255,255,0.9)",cursor:"pointer",fontSize:16,
+        display:"flex",alignItems:"center",justifyContent:"center"}}>▶</button>}
+    </div>
+    <div style={{padding:"8px 10px",background:"#111"}}>
+      <div style={{height:3,background:"#333",borderRadius:2,marginBottom:8,cursor:"pointer",position:"relative"}}
+        onClick={e=>{const r=e.currentTarget.getBoundingClientRect();setProgress((e.clientX-r.left)/r.width*100);}}>
+        <div style={{height:"100%",width:progress+"%",background:"#818cf8",borderRadius:2}}/>
+        <div style={{position:"absolute",top:"50%",left:progress+"%",transform:"translate(-50%,-50%)",
+          width:10,height:10,borderRadius:"50%",background:"#818cf8"}}/>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={()=>setPlaying(p=>!p)} style={{background:"none",border:"none",color:"#fff",cursor:"pointer",fontSize:14,padding:0}}>{playing?"⏸":"▶"}</button>
+        <button onClick={()=>setMuted(m=>!m)} style={{background:"none",border:"none",color:muted?"#ef4444":"#fff",cursor:"pointer",fontSize:12,padding:0}}>{muted?"🔇":"🔊"}</button>
+        <input type="range" min={0} max={100} value={muted?0:vol} onChange={e=>setVol(+e.target.value)}
+          style={{width:50,accentColor:"#818cf8"}}/>
+        <span style={{fontSize:10,color:"#6b7280",marginLeft:"auto"}}>{fmt(cur)} / {fmt(dur)}</span>
+        <button style={{background:"none",border:"none",color:"#aaa",cursor:"pointer",fontSize:12,padding:0}}>⛶</button>
+      </div>
+    </div>
+  </div>);
+}
+
+function SpacingSystemDemo(){
+  const scale=[{t:"space-1",px:4},{t:"space-2",px:8},{t:"space-3",px:12},{t:"space-4",px:16},
+    {t:"space-6",px:24},{t:"space-8",px:32},{t:"space-12",px:48},{t:"space-16",px:64}];
+  return(<div style={{display:"flex",flexDirection:"column",gap:4}}>
+    {scale.map(s=>(<div key={s.t} style={{display:"flex",alignItems:"center",gap:8}}>
+      <div style={{width:70,fontSize:10,color:"#4b5563",fontFamily:"monospace"}}>{s.t}</div>
+      <div style={{width:s.px,height:14,background:"#818cf822",borderRadius:2,border:"1px solid #818cf844",flexShrink:0}}/>
+      <div style={{fontSize:10,color:"#6b7280"}}>{s.px}px</div>
+    </div>))}
+  </div>);
+}
+
+function EasingFunctionsDemo(){
+  const easings=[
+    {name:"linear",css:"linear"},
+    {name:"ease",css:"ease"},
+    {name:"ease-in",css:"ease-in"},
+    {name:"ease-out",css:"ease-out"},
+    {name:"ease-in-out",css:"ease-in-out"},
+    {name:"spring",css:"cubic-bezier(0.34,1.56,0.64,1)"},
+  ];
+  const [active,setActive]=useState(false);
+  return(<div>
+    <Btn small onClick={()=>setActive(a=>!a)} style={{marginBottom:10}}>
+      {active?"最初に戻す":"アニメーション再生"}
+    </Btn>
+    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+      {easings.map(e=>(<div key={e.name} style={{display:"flex",alignItems:"center",gap:8}}>
+        <div style={{width:80,fontSize:10,color:"#6b7280",fontFamily:"monospace",flexShrink:0}}>{e.name}</div>
+        <div style={{flex:1,height:8,background:"#1a1a2e",borderRadius:4,overflow:"hidden",position:"relative"}}>
+          <div style={{position:"absolute",left:active?"calc(100% - 16px)":4,top:"50%",transform:"translateY(-50%)",
+            width:12,height:12,borderRadius:"50%",background:"#818cf8",
+            transition:active?`left 1.2s ${e.css}`:"left 0.1s linear"}}/>
+        </div>
+      </div>))}
+    </div>
+  </div>);
+}
+
+function SortableTableDemo(){
+  const data=[
+    {name:"Button",uses:1243,size:"2.1KB",status:"stable"},
+    {name:"Modal",uses:876,size:"4.8KB",status:"stable"},
+    {name:"Input",uses:1102,size:"1.9KB",status:"stable"},
+    {name:"Dropdown",uses:654,size:"3.2KB",status:"beta"},
+    {name:"Tooltip",uses:432,size:"1.4KB",status:"stable"},
+  ];
+  const [sort,setSort]=useState({key:"uses",dir:"desc"});
+  const sorted=[...data].sort((a,b)=>{const v=sort.dir==="asc"?1:-1;return a[sort.key]>b[sort.key]?v:-v;});
+  const toggle=key=>setSort(s=>({key,dir:s.key===key&&s.dir==="desc"?"asc":"desc"}));
+  const arrow=key=>sort.key===key?(sort.dir==="desc"?"↓":"↑"):"↕";
+  return(<div style={{overflowX:"auto"}}>
+    <table style={{width:"100%",borderCollapse:"collapse",fontSize:11}}>
+      <thead><tr>
+        {[["name","コンポーネント"],["uses","使用数"],["size","サイズ"]].map(([k,l])=>(
+          <th key={k} onClick={()=>toggle(k)} style={{padding:"6px 8px",textAlign:"left",
+            color:sort.key===k?"#818cf8":"#4b5563",borderBottom:"1px solid #1e1e30",cursor:"pointer",
+            fontWeight:700,whiteSpace:"nowrap"}}>{l} {arrow(k)}</th>
+        ))}
+        <th style={{padding:"6px 8px",textAlign:"left",color:"#4b5563",borderBottom:"1px solid #1e1e30"}}>状態</th>
+      </tr></thead>
+      <tbody>{sorted.map((r,i)=>(<tr key={r.name} style={{background:i%2?"#0d0d18":"transparent"}}>
+        <td style={{padding:"6px 8px",color:"#e5e7eb",fontWeight:600}}>{r.name}</td>
+        <td style={{padding:"6px 8px",color:"#9ca3af"}}>{r.uses.toLocaleString()}</td>
+        <td style={{padding:"6px 8px",color:"#9ca3af"}}>{r.size}</td>
+        <td style={{padding:"6px 8px"}}>
+          <span style={{background:r.status==="stable"?"#34d39922":"#fb923c22",
+            color:r.status==="stable"?"#34d399":"#fb923c",fontSize:10,padding:"2px 6px",borderRadius:4,fontWeight:600}}>
+            {r.status}</span>
+        </td>
+      </tr>))}</tbody>
+    </table>
+  </div>);
+}
+
+function MultiStepWizardDemo(){
+  const steps=["アカウント","プロフィール","確認"];
+  const [step,setStep]=useState(0);
+  const [vals,setVals]=useState({email:"",name:"",role:"デザイナー"});
+  return(<div>
+    <div style={{display:"flex",alignItems:"center",marginBottom:14}}>
+      {steps.map((s,i)=>(<React.Fragment key={i}>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+          <div style={{width:24,height:24,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+            fontSize:10,fontWeight:700,background:i<=step?"#818cf8":"#1a1a2e",
+            color:i<=step?"#fff":"#4b5563",border:`2px solid ${i<=step?"#818cf8":"#2a2a40"}`}}>
+            {i<step?"✓":i+1}</div>
+          <span style={{fontSize:9,color:i===step?"#818cf8":"#4b5563"}}>{s}</span>
+        </div>
+        {i<steps.length-1&&<div style={{flex:1,height:2,background:i<step?"#818cf8":"#1e1e30",margin:"0 4px",marginTop:-12}}/>}
+      </React.Fragment>))}
+    </div>
+    {step===0&&<input value={vals.email} onChange={e=>setVals(v=>({...v,email:e.target.value}))}
+      placeholder="メールアドレス" style={{width:"100%",background:"#111",border:"1px solid #2a2a40",
+        color:"#e5e7eb",borderRadius:6,padding:"7px 10px",fontSize:12,fontFamily:"inherit",boxSizing:"border-box"}}/>}
+    {step===1&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+      <input value={vals.name} onChange={e=>setVals(v=>({...v,name:e.target.value}))} placeholder="名前"
+        style={{background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",borderRadius:6,padding:"7px 10px",fontSize:12,fontFamily:"inherit"}}/>
+      <select value={vals.role} onChange={e=>setVals(v=>({...v,role:e.target.value}))}
+        style={{background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",borderRadius:6,padding:"7px 10px",fontSize:12,fontFamily:"inherit"}}>
+        {["デザイナー","エンジニア","PM","その他"].map(r=><option key={r}>{r}</option>)}
+      </select>
+    </div>}
+    {step===2&&<div style={{background:"#111",borderRadius:8,padding:10,fontSize:11,color:"#9ca3af"}}>
+      <div style={{marginBottom:4}}>📧 {vals.email||"（未入力）"}</div>
+      <div style={{marginBottom:4}}>👤 {vals.name||"（未入力）"}</div>
+      <div>💼 {vals.role}</div>
+    </div>}
+    <div style={{display:"flex",gap:6,marginTop:10}}>
+      {step>0&&<Btn small onClick={()=>setStep(s=>s-1)} style={{background:"#1a1a2e",color:"#818cf8"}}>戻る</Btn>}
+      {step<steps.length-1
+        ?<Btn small onClick={()=>setStep(s=>s+1)}>次へ →</Btn>
+        :<Btn small style={{background:"#34d399"}}>登録完了 ✓</Btn>}
+    </div>
+  </div>);
+}
+
+function ChatTypingDemo(){
+  const [msgs,setMsgs]=useState([{from:"them",text:"こんにちは！"},{from:"me",text:"やあ、調子はどう？"}]);
+  const [typing,setTyping]=useState(false);
+  const [input,setInput]=useState("");
+  const replies=["いいね！","なるほど〜","ありがとう！","了解です","それは面白い！"];
+  const [ri,setRi]=useState(0);
+  const send=()=>{
+    if(!input.trim())return;
+    setMsgs(m=>[...m,{from:"me",text:input}]);setInput("");setTyping(true);
+    setTimeout(()=>{setTyping(false);setMsgs(m=>[...m,{from:"them",text:replies[ri%replies.length]}]);setRi(r=>r+1);},1500);
+  };
+  return(<div>
+    <div style={{height:110,overflowY:"auto",display:"flex",flexDirection:"column",gap:6,marginBottom:8}}>
+      {msgs.map((m,i)=>(<div key={i} style={{display:"flex",justifyContent:m.from==="me"?"flex-end":"flex-start"}}>
+        <div style={{maxWidth:"70%",padding:"7px 10px",borderRadius:10,fontSize:12,
+          background:m.from==="me"?"#818cf8":"#1a1a2e",color:m.from==="me"?"#fff":"#e5e7eb",
+          borderBottomRightRadius:m.from==="me"?2:10,borderBottomLeftRadius:m.from==="me"?10:2}}>
+          {m.text}
+        </div>
+      </div>))}
+      {typing&&<div style={{display:"flex",justifyContent:"flex-start"}}>
+        <div style={{padding:"8px 12px",borderRadius:"10px 10px 10px 2px",background:"#1a1a2e",
+          display:"flex",gap:3,alignItems:"center"}}>
+          {[0,1,2].map(i=>(<div key={i} style={{width:6,height:6,borderRadius:"50%",background:"#818cf8",
+            animation:`waveBounce 1s ease-in-out infinite`,animationDelay:`${i*0.15}s`}}/>))}
+        </div>
+      </div>}
+    </div>
+    <div style={{display:"flex",gap:6}}>
+      <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()}
+        placeholder="メッセージを入力..."
+        style={{flex:1,background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",borderRadius:8,
+          padding:"7px 10px",fontSize:12,fontFamily:"inherit"}}/>
+      <Btn small onClick={send}>送信</Btn>
+    </div>
+  </div>);
+}
+
+function NumberPadDemo(){
+  const [val,setVal]=useState("");
+  const press=k=>{if(k==="⌫")setVal(v=>v.slice(0,-1));else if(k==="✓")setVal("");else if(val.length<6)setVal(v=>v+k);};
+  const keys=["1","2","3","4","5","6","7","8","9","⌫","0","✓"];
+  return(<div style={{textAlign:"center"}}>
+    <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:14}}>
+      {Array.from({length:6}).map((_,i)=>(<div key={i} style={{width:14,height:14,borderRadius:"50%",
+        background:i<val.length?"#818cf8":"#1e1e30",transition:"background .15s"}}/>))}
+    </div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,maxWidth:160,margin:"0 auto"}}>
+      {keys.map(k=>(<button key={k} onClick={()=>press(k)} style={{padding:"10px",borderRadius:8,border:"none",
+        cursor:"pointer",fontFamily:"inherit",fontSize:16,fontWeight:600,
+        background:k==="✓"?"#34d39922":k==="⌫"?"#ef444422":"#1a1a2e",
+        color:k==="✓"?"#34d399":k==="⌫"?"#ef4444":"#e5e7eb",transition:"opacity .1s"}}
+        onMouseDown={e=>e.currentTarget.style.opacity=".6"}
+        onMouseUp={e=>e.currentTarget.style.opacity="1"}>{k}</button>))}
+    </div>
+  </div>);
+}
+
+function AppSplashDemo(){
+  const [phase,setPhase]=useState(0);
+  const [progress,setProgress]=useState(0);
+  const start=()=>{
+    setPhase(1);setProgress(0);
+    const t=setInterval(()=>setProgress(p=>{
+      const n=p+Math.random()*15;
+      if(n>=100){clearInterval(t);setTimeout(()=>setPhase(2),300);return 100;}
+      return n;
+    }),150);
+  };
+  if(phase===2)return(<div style={{textAlign:"center",padding:20}}>
+    <div style={{fontSize:28,marginBottom:8,animation:"heartBeat 1s ease"}}>🎉</div>
+    <div style={{fontSize:13,fontWeight:700,color:"#34d399"}}>起動完了！</div>
+    <button onClick={()=>{setPhase(0);setProgress(0);}} style={{marginTop:8,background:"none",border:"none",
+      color:"#818cf8",cursor:"pointer",fontFamily:"inherit",fontSize:11}}>もう一度</button>
+  </div>);
+  return(<div style={{textAlign:"center",padding:"16px 0"}}>
+    <div style={{fontSize:36,marginBottom:8,animation:phase===1?"pulseOp 1s infinite":"none"}}>✦</div>
+    <div style={{fontFamily:"'Syne',sans-serif",fontSize:18,fontWeight:800,marginBottom:4,
+      background:"linear-gradient(90deg,#818cf8,#f472b6)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
+      MyApp</div>
+    {phase===0&&<Btn small onClick={start} style={{marginTop:8}}>起動する</Btn>}
+    {phase===1&&<div style={{marginTop:8}}>
+      <div style={{width:120,height:3,background:"#1e1e30",borderRadius:2,margin:"0 auto 6px"}}>
+        <div style={{height:"100%",width:Math.min(100,progress)+"%",
+          background:"linear-gradient(90deg,#818cf8,#f472b6)",borderRadius:2,transition:"width .1s"}}/>
+      </div>
+      <div style={{fontSize:10,color:"#4b5563"}}>読み込み中...</div>
+    </div>}
+  </div>);
+}
+
+function ZoomPanDemo(){
+  const [scale,setScale]=useState(1);
+  const [pos,setPos]=useState({x:0,y:0});
+  const dragging=useRef(null);
+  return(<div style={{overflow:"hidden",borderRadius:8,background:"#0a0a14",height:140,
+    position:"relative",cursor:scale>1?"grab":"default"}}
+    onWheel={e=>{e.preventDefault();setScale(s=>Math.max(1,Math.min(4,s-e.deltaY*0.01)));}}
+    onMouseDown={e=>{if(scale>1)dragging.current={sx:pos.x,sy:pos.y,mx:e.clientX,my:e.clientY};}}
+    onMouseMove={e=>{if(dragging.current)setPos({x:dragging.current.sx+e.clientX-dragging.current.mx,y:dragging.current.sy+e.clientY-dragging.current.my});}}
+    onMouseUp={()=>dragging.current=null}>
+    <div style={{transform:`scale(${scale}) translate(${pos.x/scale}px,${pos.y/scale}px)`,
+      transformOrigin:"center",transition:dragging.current?"none":"transform .1s",
+      width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4,padding:8,width:"100%"}}>
+        {["🎨","💻","🚀","📊","🎯","✨","🌐","📱"].map((e,i)=>(<div key={i}
+          style={{background:"#1a1a2e",borderRadius:6,padding:10,textAlign:"center",fontSize:18}}>{e}</div>))}
+      </div>
+    </div>
+    <div style={{position:"absolute",bottom:6,right:6,display:"flex",gap:4}}>
+      <button onClick={()=>setScale(s=>Math.min(4,s+0.5))} style={{width:24,height:24,borderRadius:4,background:"#1a1a2e",border:"none",color:"#818cf8",cursor:"pointer",fontWeight:700}}>+</button>
+      <button onClick={()=>{setScale(1);setPos({x:0,y:0});}} style={{width:24,height:24,borderRadius:4,background:"#1a1a2e",border:"none",color:"#6b7280",cursor:"pointer",fontSize:10}}>↺</button>
+      <button onClick={()=>setScale(s=>Math.max(1,s-0.5))} style={{width:24,height:24,borderRadius:4,background:"#1a1a2e",border:"none",color:"#818cf8",cursor:"pointer",fontWeight:700}}>−</button>
+    </div>
+    <div style={{position:"absolute",bottom:6,left:6,fontSize:10,color:"#4b5563"}}>{Math.round(scale*100)}%</div>
+  </div>);
+}
+
+function DataFilterDemo(){
+  const all=[
+    {n:"Button",cat:"基本",uses:1243},{n:"Modal",cat:"オーバーレイ",uses:876},
+    {n:"Input",cat:"フォーム",uses:1102},{n:"Badge",cat:"基本",uses:654},
+    {n:"Drawer",cat:"オーバーレイ",uses:432},{n:"Slider",cat:"フォーム",uses:321},
+  ];
+  const cats=["すべて","基本","フォーム","オーバーレイ"];
+  const [cat,setCat]=useState("すべて");
+  const [q,setQ]=useState("");
+  const filtered=all.filter(x=>(cat==="すべて"||x.cat===cat)&&x.n.toLowerCase().includes(q.toLowerCase()));
+  return(<div>
+    <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
+      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="検索..."
+        style={{flex:1,minWidth:80,background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",
+          borderRadius:6,padding:"5px 8px",fontSize:11,fontFamily:"inherit"}}/>
+      <select value={cat} onChange={e=>setCat(e.target.value)}
+        style={{background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",borderRadius:6,padding:"5px 8px",fontSize:11,fontFamily:"inherit"}}>
+        {cats.map(c=><option key={c}>{c}</option>)}
+      </select>
+    </div>
+    <div style={{display:"flex",flexDirection:"column",gap:4}}>
+      {filtered.length?filtered.map(x=>(<div key={x.n} style={{display:"flex",justifyContent:"space-between",
+        padding:"6px 8px",background:"#111",borderRadius:6,fontSize:11}}>
+        <span style={{color:"#e5e7eb",fontWeight:600}}>{x.n}</span>
+        <span style={{color:"#4b5563"}}>{x.cat} · {x.uses}</span>
+      </div>)):<div style={{textAlign:"center",padding:12,color:"#4b5563",fontSize:11}}>該当なし</div>}
+    </div>
+  </div>);
+}
+
+function FloatingActionMenuDemo(){
+  const [open,setOpen]=useState(false);
+  const actions=[{i:"📝",l:"メモ",c:"#818cf8"},{i:"📸",l:"写真",c:"#34d399"},{i:"📎",l:"添付",c:"#f472b6"},{i:"🔗",l:"リンク",c:"#fb923c"}];
+  return(<div style={{position:"relative",height:110,display:"flex",alignItems:"flex-end",justifyContent:"flex-end"}}>
+    {open&&actions.map((a,i)=>(<div key={a.l} style={{position:"absolute",bottom:52+i*44,right:0,
+      display:"flex",alignItems:"center",gap:8,animation:"fadeUp .2s ease both",animationDelay:`${i*0.04}s`}}>
+      <span style={{fontSize:10,color:"#9ca3af",background:"#1a1a2e",padding:"2px 8px",borderRadius:4}}>{a.l}</span>
+      <div style={{width:36,height:36,borderRadius:"50%",background:a.c+"22",border:`1px solid ${a.c}44`,
+        display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,cursor:"pointer"}}>{a.i}</div>
+    </div>))}
+    <button onClick={()=>setOpen(o=>!o)} style={{width:44,height:44,borderRadius:"50%",border:"none",
+      background:"#818cf8",color:"#fff",fontSize:18,cursor:"pointer",
+      transform:open?"rotate(45deg)":"rotate(0)",transition:"transform .2s"}}>+</button>
+  </div>);
+}
+
+function GestureHintDemo(){
+  const gestures=[
+    {icon:"👆",name:"タップ",desc:"要素を選択・決定"},
+    {icon:"👆👆",name:"ダブルタップ",desc:"いいね・ズームイン"},
+    {icon:"✌️",name:"ピンチ",desc:"ズームイン/アウト"},
+    {icon:"☝️",name:"スワイプ",desc:"ページ遷移・削除"},
+    {icon:"✊",name:"長押し",desc:"コンテキストメニュー"},
+    {icon:"✋",name:"ドラッグ",desc:"並び替え・移動"},
+  ];
+  const [sel,setSel]=useState(null);
+  return(<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+    {gestures.map(g=>(<div key={g.name} onClick={()=>setSel(sel===g.name?null:g.name)} style={{
+      background:sel===g.name?"#818cf822":"#111",
+      border:`1px solid ${sel===g.name?"#818cf8":"#1e1e30"}`,
+      borderRadius:8,padding:8,textAlign:"center",cursor:"pointer",transition:"all .15s"}}>
+      <div style={{fontSize:20,marginBottom:3}}>{g.icon}</div>
+      <div style={{fontSize:10,fontWeight:700,color:sel===g.name?"#818cf8":"#9ca3af"}}>{g.name}</div>
+      {sel===g.name&&<div style={{fontSize:9,color:"#6b7280",marginTop:3}}>{g.desc}</div>}
+    </div>))}
+  </div>);
+}
+
+function IconGridDemo(){
+  const sizes=[16,20,24,32,40,48];
+  const icons=["🏠","🔍","❤️","⚙️","📁","👤","🔔","📊"];
+  const [sz,setSz]=useState(24);
+  return(<div>
+    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10,flexWrap:"wrap"}}>
+      <span style={{fontSize:11,color:"#6b7280"}}>サイズ:</span>
+      {sizes.map(s=>(<button key={s} onClick={()=>setSz(s)} style={{padding:"2px 6px",fontSize:10,borderRadius:4,
+        border:"none",cursor:"pointer",fontFamily:"inherit",
+        background:sz===s?"#818cf8":"#1a1a2e",color:sz===s?"#fff":"#555"}}>{s}</button>))}
+    </div>
+    <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+      {icons.map((ic,i)=>(<div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+        <div style={{width:sz+16,height:sz+16,background:"#1a1a2e",borderRadius:6,
+          display:"flex",alignItems:"center",justifyContent:"center",fontSize:sz*0.6}}>{ic}</div>
+        <div style={{fontSize:9,color:"#4b5563"}}>{sz}px</div>
+      </div>))}
+    </div>
+  </div>);
+}
+
+function ShadowSystemDemo(){
+  const shadows=[
+    {name:"xs",val:"0 1px 2px rgba(0,0,0,.4)"},
+    {name:"sm",val:"0 2px 4px rgba(0,0,0,.4)"},
+    {name:"md",val:"0 4px 12px rgba(0,0,0,.4)"},
+    {name:"lg",val:"0 8px 24px rgba(0,0,0,.4)"},
+    {name:"xl",val:"0 16px 48px rgba(0,0,0,.4)"},
+  ];
+  return(<div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center"}}>
+    {shadows.map(s=>(<div key={s.name} style={{textAlign:"center"}}>
+      <div style={{width:44,height:44,borderRadius:8,background:"#1e1e30",boxShadow:s.val,margin:"4px auto 6px"}}/>
+      <div style={{fontSize:9,color:"#4b5563",fontFamily:"monospace"}}>{s.name}</div>
+    </div>))}
+  </div>);
+}
+
+
+/* ── UX PATTERNS ── */
+
+function InlineEditDemo(){
+  const items=[
+    {id:1,label:"プロジェクト名",val:"デザインシステム v2"},
+    {id:2,label:"説明文",val:"コンポーネントライブラリの整備"},
+    {id:3,label:"タグ",val:"UI・デザイン・Figma"},
+  ];
+  const [data,setData]=useState(items);
+  const [editing,setEditing]=useState(null);
+  const [draft,setDraft]=useState("");
+  const start=(id,val)=>{setEditing(id);setDraft(val);};
+  const save=id=>{setData(d=>d.map(x=>x.id===id?{...x,val:draft}:x));setEditing(null);};
+  return(<div style={{display:"flex",flexDirection:"column",gap:6}}>
+    {data.map(item=>(<div key={item.id} style={{display:"flex",alignItems:"center",gap:8,
+      padding:"8px 10px",background:"#0e0e18",borderRadius:8,border:"1px solid #1e1e30"}}>
+      <span style={{fontSize:10,color:"#4b5563",width:70,flexShrink:0}}>{item.label}</span>
+      {editing===item.id
+        ?<div style={{flex:1,display:"flex",gap:6,alignItems:"center"}}>
+            <input value={draft} onChange={e=>setDraft(e.target.value)}
+              autoFocus onKeyDown={e=>{if(e.key==="Enter")save(item.id);if(e.key==="Escape")setEditing(null);}}
+              style={{flex:1,background:"#1a1a2e",border:"1px solid #818cf8",color:"#e5e7eb",
+                borderRadius:5,padding:"4px 8px",fontSize:12,fontFamily:"inherit",outline:"none"}}/>
+            <button onClick={()=>save(item.id)} style={{background:"#818cf8",border:"none",color:"#fff",
+              borderRadius:4,padding:"3px 8px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✓</button>
+            <button onClick={()=>setEditing(null)} style={{background:"#1a1a2e",border:"none",color:"#6b7280",
+              borderRadius:4,padding:"3px 6px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+          </div>
+        :<div style={{flex:1,display:"flex",justifyContent:"space-between",alignItems:"center",
+            cursor:"pointer",borderRadius:4,padding:"2px 4px"}}
+            onClick={()=>start(item.id,item.val)}
+            onMouseEnter={e=>{e.currentTarget.style.background="#1a1a2e";}}
+            onMouseLeave={e=>{e.currentTarget.style.background="transparent";}}>
+          <span style={{fontSize:12,color:"#e5e7eb"}}>{item.val}</span>
+          <span style={{fontSize:10,color:"#818cf8",opacity:0,marginLeft:4}}
+            onMouseEnter={e=>e.currentTarget.style.opacity="1"}
+            onMouseLeave={e=>e.currentTarget.style.opacity="0"}>✏</span>
+        </div>}
+    </div>))}
+    <p style={{fontSize:10,color:"#374151",margin:0}}>クリックで直接編集</p>
+  </div>);
+}
+
+function UndoToastDemo(){
+  const [log,setLog]=useState([]);
+  const [toast,setToast]=useState(null);
+  const timerRef=useRef(null);
+  const doDelete=item=>{
+    setLog(l=>l.filter(x=>x!==item));
+    if(timerRef.current)clearTimeout(timerRef.current);
+    setToast(item);
+    timerRef.current=setTimeout(()=>setToast(null),3500);
+  };
+  const undo=()=>{
+    if(toast)setLog(l=>[...l,toast]);
+    setToast(null);
+    if(timerRef.current)clearTimeout(timerRef.current);
+  };
+  const [items]=useState(["デザインファイル.fig","仕様書.pdf","プロトタイプ.xd"]);
+  const visible=items.filter(x=>log.indexOf(x)===-1&&true).filter(x=>!log.includes(x));
+  // シンプルにitemsから削除済みを追跡
+  const [deleted,setDeleted]=useState([]);
+  const del2=item=>{
+    setDeleted(d=>[...d,item]);
+    if(timerRef.current)clearTimeout(timerRef.current);
+    setToast(item);
+    timerRef.current=setTimeout(()=>setToast(null),3500);
+  };
+  const undo2=()=>{
+    if(toast)setDeleted(d=>d.filter(x=>x!==toast));
+    setToast(null);
+    if(timerRef.current)clearTimeout(timerRef.current);
+  };
+  return(<div>
+    <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:10}}>
+      {items.filter(x=>!deleted.includes(x)).map(item=>(
+        <div key={item} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
+          padding:"8px 12px",background:"#0e0e18",borderRadius:8,border:"1px solid #1e1e30"}}>
+          <span style={{fontSize:12,color:"#e5e7eb"}}>📄 {item}</span>
+          <button onClick={()=>del2(item)} style={{background:"#ef444422",border:"none",color:"#ef4444",
+            borderRadius:4,padding:"3px 8px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>削除</button>
+        </div>
+      ))}
+      {items.every(x=>deleted.includes(x))&&
+        <div style={{fontSize:12,color:"#374151",padding:"12px",textAlign:"center"}}>すべて削除済み</div>}
+    </div>
+    {toast&&(
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
+        background:"#1e1e2e",borderRadius:8,padding:"10px 14px",border:"1px solid #2a2a40",
+        animation:"fadeUp .2s ease"}}>
+        <span style={{fontSize:12,color:"#9ca3af"}}>「{toast}」を削除しました</span>
+        <button onClick={undo2} style={{background:"#818cf8",border:"none",color:"#fff",
+          borderRadius:4,padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          元に戻す
+        </button>
+      </div>
+    )}
+  </div>);
+}
+
+function OverflowMenuDemo(){
+  const [open,setOpen]=useState(null);
+  const menus=[
+    {id:"a",label:"デザインファイル.fig",
+     actions:[{i:"✏️",l:"名前を変更"},{i:"📋",l:"コピー"},{i:"🔗",l:"リンクをコピー"},{i:"⬇️",l:"ダウンロード"},{i:"🗑️",l:"削除",danger:true}]},
+    {id:"b",label:"プロトタイプ.xd",
+     actions:[{i:"✏️",l:"名前を変更"},{i:"📋",l:"コピー"},{i:"🔗",l:"リンクをコピー"},{i:"🗑️",l:"削除",danger:true}]},
+  ];
+  useEffect(()=>{
+    const close=()=>setOpen(null);
+    document.addEventListener("click",close);
+    return()=>document.removeEventListener("click",close);
+  },[]);
+  return(<div style={{display:"flex",flexDirection:"column",gap:6}}>
+    {menus.map(m=>(
+      <div key={m.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
+        padding:"8px 12px",background:"#0e0e18",borderRadius:8,border:"1px solid #1e1e30",
+        position:"relative"}}>
+        <span style={{fontSize:12,color:"#e5e7eb"}}>📁 {m.label}</span>
+        <div style={{position:"relative"}}>
+          <button onClick={e=>{e.stopPropagation();setOpen(open===m.id?null:m.id);}}
+            style={{background:open===m.id?"#1a1a2e":"none",border:"none",color:"#9ca3af",
+              cursor:"pointer",fontSize:16,borderRadius:4,width:28,height:28,
+              display:"flex",alignItems:"center",justifyContent:"center"}}>⋯</button>
+          {open===m.id&&(
+            <div onClick={e=>e.stopPropagation()}
+              style={{position:"absolute",right:0,top:"calc(100% + 4px)",width:160,
+                background:"#12121f",border:"1px solid #1e1e30",borderRadius:10,
+                boxShadow:"0 8px 24px rgba(0,0,0,.5)",zIndex:100,overflow:"hidden",
+                animation:"popIn .15s ease"}}>
+              {m.actions.map(a=>(
+                <button key={a.l} onClick={()=>setOpen(null)}
+                  style={{width:"100%",padding:"9px 14px",background:"none",border:"none",
+                    color:a.danger?"#ef4444":"#e5e7eb",cursor:"pointer",fontFamily:"inherit",
+                    fontSize:12,textAlign:"left",display:"flex",alignItems:"center",gap:8,
+                    transition:"background .1s"}}
+                  onMouseEnter={e=>e.currentTarget.style.background="#1a1a2e"}
+                  onMouseLeave={e=>e.currentTarget.style.background="none"}>
+                  {a.i} {a.l}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>);
+}
+
+function ProgressiveDisclosureDemo(){
+  const [expanded,setExpanded]=useState(false);
+  const [level,setLevel]=useState(1);
+  const basic=[
+    {l:"名前",v:"田中 花子"},
+    {l:"メール",v:"hanako@example.com"},
+  ];
+  const advanced=[
+    {l:"電話番号",v:"090-0000-0000"},
+    {l:"会社名",v:"株式会社デザイン"},
+    {l:"部署",v:"UXデザイン部"},
+    {l:"役職",v:"シニアデザイナー"},
+  ];
+  return(<div>
+    <div style={{fontSize:10,letterSpacing:2,color:"#4b5563",marginBottom:8,textTransform:"uppercase"}}>段階的開示</div>
+    <div style={{display:"flex",flexDirection:"column",gap:5,marginBottom:10}}>
+      {basic.map(f=>(
+        <div key={f.l} style={{display:"flex",gap:8,fontSize:12}}>
+          <span style={{color:"#4b5563",width:70,flexShrink:0}}>{f.l}</span>
+          <span style={{color:"#e5e7eb"}}>{f.v}</span>
+        </div>
+      ))}
+      {expanded&&advanced.map((f,i)=>(
+        <div key={f.l} style={{display:"flex",gap:8,fontSize:12,
+          animation:"fadeUp .2s ease both",animationDelay:`${i*0.04}s`}}>
+          <span style={{color:"#4b5563",width:70,flexShrink:0}}>{f.l}</span>
+          <span style={{color:"#e5e7eb"}}>{f.v}</span>
+        </div>
+      ))}
+    </div>
+    <button onClick={()=>setExpanded(e=>!e)} style={{background:"none",border:"none",color:"#818cf8",
+      cursor:"pointer",fontFamily:"inherit",fontSize:12,padding:0,display:"flex",alignItems:"center",gap:4}}>
+      {expanded?"▲ 閉じる":"▼ 詳細情報を表示"}
+    </button>
+  </div>);
+}
+
+function OptimisticUIDemo(){
+  const [items,setItems]=useState([
+    {id:1,text:"Figmaのコンポーネントを整理",done:false},
+    {id:2,text:"デザインレビューの準備",done:false},
+    {id:3,text:"プロトタイプの作成",done:false},
+  ]);
+  const [saving,setSaving]=useState(null);
+  const toggle=id=>{
+    // 即座にUIを更新（楽観的更新）
+    setItems(prev=>prev.map(x=>x.id===id?{...x,done:!x.done}:x));
+    setSaving(id);
+    // 実際の保存処理をシミュレート
+    setTimeout(()=>setSaving(null),800);
+  };
+  return(<div>
+    <div style={{fontSize:10,color:"#4b5563",marginBottom:8}}>クリックで即座にUIが更新（保存完了を待たない）</div>
+    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+      {items.map(item=>(
+        <div key={item.id} onClick={()=>toggle(item.id)}
+          style={{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
+            background:"#0e0e18",borderRadius:8,border:"1px solid #1e1e30",cursor:"pointer",
+            transition:"opacity .1s",opacity:saving===item.id?0.7:1}}>
+          <div style={{width:18,height:18,borderRadius:"50%",border:`2px solid ${item.done?"#34d399":"#374151"}`,
+            background:item.done?"#34d399":"transparent",display:"flex",alignItems:"center",
+            justifyContent:"center",flexShrink:0,transition:"all .2s"}}>
+            {item.done&&<span style={{color:"#fff",fontSize:10,fontWeight:700}}>✓</span>}
+          </div>
+          <span style={{fontSize:12,color:item.done?"#4b5563":"#e5e7eb",
+            textDecoration:item.done?"line-through":"none",transition:"all .2s"}}>{item.text}</span>
+          {saving===item.id&&<div style={{marginLeft:"auto",width:12,height:12,border:"2px solid #818cf844",
+            borderTop:"2px solid #818cf8",borderRadius:"50%",animation:"spin 0.6s linear infinite"}}/>}
+        </div>
+      ))}
+    </div>
+  </div>);
+}
+
+function CoachmarkDemo(){
+  const [step,setStep]=useState(0);
+  const steps=[
+    {target:"検索",msg:"ここで全コンポーネントを検索できます",pos:"bottom"},
+    {target:"カテゴリ",msg:"カテゴリタブで絞り込みができます",pos:"bottom"},
+    {target:"カード",msg:"各カードをクリックで詳細を表示",pos:"top"},
+  ];
+  const done=step>=steps.length;
+  return(<div style={{position:"relative"}}>
+    {/* UIモック */}
+    <div style={{display:"flex",flexDirection:"column",gap:6,opacity:done?1:0.85}}>
+      <div style={{background:"#0e0e18",borderRadius:8,padding:"8px 12px",border:"1px solid #1e1e30",
+        display:"flex",alignItems:"center",gap:8,
+        outline:!done&&step===0?"2px solid #818cf8":"none",
+        outlineOffset:2,transition:"outline .2s"}}>
+        <span style={{color:"#374151",fontSize:14}}>🔍</span>
+        <span style={{fontSize:12,color:"#374151"}}>コンポーネントを検索...</span>
+      </div>
+      <div style={{display:"flex",gap:4,
+        outline:!done&&step===1?"2px solid #818cf8":"none",borderRadius:6,
+        outlineOffset:2,transition:"outline .2s"}}>
+        {["すべて","フォーム","レイアウト"].map(t=>(
+          <div key={t} style={{padding:"4px 10px",background:"#1a1a2e",borderRadius:6,fontSize:11,color:"#6b7280"}}>{t}</div>
+        ))}
+      </div>
+      <div style={{background:"#0e0e18",borderRadius:8,padding:"10px 12px",border:"1px solid #1e1e30",
+        outline:!done&&step===2?"2px solid #818cf8":"none",
+        outlineOffset:2,transition:"outline .2s"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>Button Component</div>
+        <div style={{fontSize:10,color:"#4b5563",marginTop:2}}>インタラクティブなサンプル</div>
+      </div>
+    </div>
+    {/* コーチマーク */}
+    {!done&&(
+      <div style={{position:"absolute",
+        top:step===2?"auto":step===0?34:58,
+        bottom:step===2?90:"auto",
+        left:"50%",transform:"translateX(-50%)",
+        background:"#818cf8",borderRadius:10,padding:"10px 14px",
+        width:200,boxShadow:"0 4px 20px #818cf855",zIndex:20,
+        animation:"fadeUp .2s ease"}}>
+        <div style={{fontSize:12,color:"#fff",marginBottom:8,lineHeight:1.4}}>
+          💡 {steps[step].msg}
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:10,color:"#c7d2fe"}}>{step+1} / {steps.length}</span>
+          <button onClick={()=>setStep(s=>s+1)} style={{background:"#fff",border:"none",
+            color:"#818cf8",borderRadius:5,padding:"3px 10px",fontSize:11,fontWeight:700,
+            cursor:"pointer",fontFamily:"inherit"}}>
+            {step<steps.length-1?"次へ →":"完了 ✓"}
+          </button>
+        </div>
+      </div>
+    )}
+    {done&&<div style={{textAlign:"center",marginTop:8,fontSize:11,color:"#34d399"}}>✓ チュートリアル完了！
+      <button onClick={()=>setStep(0)} style={{marginLeft:8,background:"none",border:"none",color:"#818cf8",cursor:"pointer",fontFamily:"inherit",fontSize:11}}>もう一度</button>
+    </div>}
+  </div>);
+}
+
+function PageLeaveWarningDemo(){
+  const [dirty,setDirty]=useState(false);
+  const [leaving,setLeaving]=useState(false);
+  const [saved,setSaved]=useState(false);
+  const save=()=>{setDirty(false);setSaved(true);setTimeout(()=>setSaved(false),2000);};
+  return(<div>
+    <div style={{background:"#0e0e18",borderRadius:8,padding:12,border:"1px solid #1e1e30",marginBottom:10}}>
+      <div style={{fontSize:11,color:"#4b5563",marginBottom:6}}>記事タイトル</div>
+      <input onChange={()=>{setDirty(true);setSaved(false);}} placeholder="タイトルを入力..."
+        style={{width:"100%",background:"#111",border:"1px solid #2a2a40",color:"#e5e7eb",borderRadius:6,
+          padding:"6px 8px",fontSize:12,fontFamily:"inherit",boxSizing:"border-box"}}/>
+    </div>
+    <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:10}}>
+      {dirty&&!saved&&<span style={{fontSize:11,color:"#fbbf24"}}>● 未保存の変更があります</span>}
+      {saved&&<span style={{fontSize:11,color:"#34d399",animation:"fadeUp .2s ease"}}>✓ 保存しました</span>}
+      {!dirty&&!saved&&<span style={{fontSize:11,color:"#374151"}}>変更なし</span>}
+      <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+        <button onClick={()=>dirty?setLeaving(true):null} style={{background:"#1a1a2e",border:"1px solid #2a2a40",
+          color:"#9ca3af",borderRadius:6,padding:"5px 12px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
+          ← 戻る
+        </button>
+        {dirty&&<Btn small onClick={save}>保存</Btn>}
+      </div>
+    </div>
+    {leaving&&(
+      <div style={{background:"#1a0808",border:"1px solid #ef444444",borderRadius:8,padding:"12px 14px",
+        animation:"popIn .15s ease"}}>
+        <div style={{fontSize:13,fontWeight:700,color:"#f87171",marginBottom:8}}>⚠ 未保存の変更があります</div>
+        <div style={{fontSize:12,color:"#9ca3af",marginBottom:12}}>このページを離れると変更が失われます。</div>
+        <div style={{display:"flex",gap:8}}>
+          <Btn small style={{background:"#ef4444"}} onClick={()=>setLeaving(false)}>このまま離れる</Btn>
+          <button onClick={()=>{save();setLeaving(false);}} style={{background:"#1a1a2e",border:"1px solid #2a2a40",
+            color:"#e5e7eb",borderRadius:6,padding:"5px 12px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
+            保存して離れる
+          </button>
+        </div>
+      </div>
+    )}
+  </div>);
+}
+
+
 const COMPONENTS={
   nav:[
     {n:"Tabs（タブ）",                   d:"コンテンツを切り替えるタブ。SNSの「投稿・フォロワー」などに",el:<TabsDemo/>},
@@ -6809,6 +7947,11 @@ const COMPONENTS={
     {n:"Currency Input（通貨入力）",       d:"¥/$/€の通貨シンボル固定・3桁カンマ・スピナー付き金額入力",el:<CurrencyInputDemo/>},
     {n:"Signature Pad（署名パッド）",      d:"マウス/タッチで描画できる電子署名UI",el:<SignaturePadDemo/>},
     {n:"Credit Card Form（クレジットカード）",d:"カード番号自動フォーマット・CVC入力で3D反転・カード種別検出",el:<CreditCardFormDemo/>},
+    {n:"Multi-step Wizard（ウィザード）", d:"進捗バー付きの複数ステップフォーム。登録・設定・オンボーディングに",el:<MultiStepWizardDemo/>},
+    {n:"Rich Text Editor（リッチテキスト）", d:"Bold・Italic・下線・リスト付きのノートやCMS用テキストエディタ",el:<RichTextEditorDemo/>},
+    {n:"Image Cropper（画像トリミング）", d:"ドラッグで切り抜き範囲を調整。プロフィール写真の設定によく使われる",el:<ImageCropperDemo/>},
+    {n:"Voice Input（音声入力）", d:"マイクボタンで音声認識。ウェーブアニメーション・文字起こし表示",el:<VoiceInputDemo/>},
+    {n:"Number Pad（テンキー）", d:"4×3のテンキーでPINや金額を入力。モバイルの数値入力UI",el:<NumberPadDemo/>},
   ],
   feedback:[
     {n:"Snackbar（スナックバー）",         d:"画面下から一時表示の軽い通知。「元に戻す」アクション付き",el:<SnackbarDemo/>},
@@ -6835,9 +7978,16 @@ const COMPONENTS={
     {n:"Feedback Widget（フィードバック）",d:"👍👎 + コメントの2ステップフィードバック収集UI",el:<FeedbackWidgetDemo/>},
     {n:"Accessibility Panel（アクセシビリティ）",d:"文字サイズ・コントラスト・モーション・フォント設定パネル",el:<AccessibilityPanelDemo/>},
     {n:"Product Tour（プロダクトツアー）", d:"ステップガイドのオンボーディングUI（spotlight highlight）",el:<ProductTourDemo/>},
+    {n:"Notification Center（通知センター）", d:"通知一覧パネル。既読/未読・全既読ボタン付き",el:<NotificationCenterDemo/>},
+    {n:"Undo Action（元に戻す）", d:"削除後「元に戻す」ボタン付きトースト。スナックバーとは別の定番UXパターン",el:<UndoToastDemo/>},
+    {n:"Page Leave Warning（離脱警告）", d:"未保存変更があるときに離脱を確認するダイアログ。フォームに必須のUX",el:<PageLeaveWarningDemo/>},
+    {n:"Optimistic UI（楽観的UI）", d:"保存完了を待たずにUIを即座に更新するパターン。操作のレスポンスを体感速度で向上",el:<OptimisticUIDemo/>},
+    {n:"Coachmark（コーチマーク）", d:"初回起動時にUI要素を指し示して機能を説明するオンボーディング手法",el:<CoachmarkDemo/>},
   ],
   loading:[
     {n:"スピナー全種類カタログ（18種）",  d:"最も多く使われるローディング表現を一覧。用途・雰囲気で使い分ける",el:<SpinnerCatalog/>},
+    {n:"Infinite Scroll（無限スクロール）", d:"スクロールで自動的に次のデータを読み込む。SNSフィードの定番UXパターン",el:<InfiniteScrollDemo/>},
+    {n:"Skeleton Variants（スケルトンバリエーション）", d:"記事・プロフィール・フィードの3種類のページ骨格ロード表示",el:<SkeletonVariantsDemo/>},
   ],
   overlay:[
     {n:"Accordion（アコーディオン）",      d:"クリックで開閉するパネル。FAQや設定項目の整理に",el:<AccordionDemo/>},
@@ -6855,6 +8005,7 @@ const COMPONENTS={
     {n:"Emoji Picker（絵文字ピッカー）",  d:"カテゴリー・検索付きの絵文字選択パネル",el:<EmojiPickerDemo/>},
     {n:"Terminal UI（ターミナル）",        d:"help/ls/pwd/echoが動作するCLI風インターフェース",el:<TerminalDemo/>},
     {n:"File Manager（ファイルマネージャー）",d:"リスト/グリッド切替・パンくず付きのファイルブラウザ",el:<FileManagerDemo/>},
+    {n:"Speed Dial FAB（スピードダイアル）", d:"＋ボタンを押すとアクションメニューが展開するFABの拡張版",el:<FloatingActionMenuDemo/>},
   ],
   content:[
     {n:"Badge（バッジ）",                  d:"通知数やステータスを示す小さなラベル",el:<BadgeDemo/>},
@@ -6887,6 +8038,13 @@ const COMPONENTS={
     {n:"Video Thumbnail（動画サムネイル）",d:"再生ボタン付きサムネイル一覧",el:<VideoThumbnailDemo/>},
     {n:"Weather Widget（天気ウィジェット）",d:"都市切替・5日間予報付きの天気カード",el:<WeatherWidgetDemo/>},
     {n:"OG Card（OGPカードプレビュー）",  d:"SNSシェア時のOpen Graphカードプレビュー",el:<OGCardDemo/>},
+    {n:"Before / After Slider（ビフォーアフター）", d:"ドラッグで新旧デザインを比較するスライダー",el:<BeforeAfterDemo/>},
+    {n:"Chat Typing Indicator（入力中...）", d:"3つのドットが弾むタイピングインジケーター。チャットアプリの定番演出",el:<ChatTypingDemo/>},
+    {n:"Video Player（動画プレーヤー）", d:"再生・シーク・音量・フルスクリーンボタン付きの動画UIコントロール",el:<VideoPlayerDemo/>},
+    {n:"QR Code Display（QRコード）", d:"URLを入力するとQRコード表示。共有・決済・認証に活用",el:<QRCodeDemo/>},
+    {n:"Overflow Menu（三点リーダー）", d:"⋯ ボタンを押してアクションメニューを展開する定番UIパターン",el:<OverflowMenuDemo/>},
+    {n:"Inline Edit（インライン編集）", d:"クリックで直接テキストを編集。ページ遷移なしに更新できる",el:<InlineEditDemo/>},
+    {n:"Progressive Disclosure（段階的開示）", d:"基本情報を先に見せ、詳細は必要な人だけ展開する情報設計手法",el:<ProgressiveDisclosureDemo/>},
 
   ],
   data:[
@@ -6903,6 +8061,8 @@ const COMPONENTS={
     {n:"Funnel Chart（ファネルチャート）", d:"各ステージの転換率を可視化。マーケティングCVR分析に",el:<FunnelChartDemo/>},
     {n:"Sparkline（スパークライン）",      d:"行内に収まるミニグラフ。KPIカードの傾向表示に",el:<SparklineDemo/>},
     {n:"Stacked Bar（積み上げ棒グラフ）", d:"構成比と合計を同時に表示。チームの工数内訳などに",el:<StackedBarDemo/>},
+    {n:"Sortable Table（ソートテーブル）", d:"列ヘッダーをクリックで昇順・降順ソートが切り替わるデータテーブル",el:<SortableTableDemo/>},
+    {n:"Data Filter（フィルター＋検索）", d:"テキスト検索とカテゴリフィルターを組み合わせたデータフィルタリングUI",el:<DataFilterDemo/>},
   ],
   layout:[
     {n:"12カラムグリッド",                 d:"Bootstrapで有名なグリッドシステム。12等分して柔軟に幅を指定",el:<Grid12Demo/>},
@@ -6919,6 +8079,7 @@ const COMPONENTS={
     {n:"アスペクト比ボックス",            d:"16:9・1:1など。aspect-ratioプロパティでレスポンシブに保つ",el:<AspectRatioDemo/>},
     {n:"Kanban Board（カンバン）",         d:"Todo・Doing・DoneのドラッグでタスクをTrello/Jira風に管理",el:<KanbanDemo/>},
     {n:"Resizable Panels（リサイズパネル）",d:"ドラッグで2ペインの幅を自由に調整。コードエディターに定番",el:<ResizablePanelsDemo/>},
+    {n:"Table of Contents（目次）", d:"スクロールに連動して現在位置をハイライトするスティッキーTOC",el:<TableOfContentsDemo/>},
   ],
   anim:[
     {n:"Fade（フェード）",                d:"透明度を変化させる最も基本のアニメーション",el:<FadeDemo/>},
@@ -6955,6 +8116,7 @@ const COMPONENTS={
     {n:"Split Text（テキスト分割）",        d:"文字を個別要素に分割してdelayをずらすStagger技法。5エフェクト",el:<SplitTextDemo/>},
     {n:"Aurora（オーロラ）",               d:"複数の半透明楕円グラデーションをblurしてオーロラ感を演出",el:<AuroraDemo/>},
     {n:"Fireworks（花火）",                d:"CSS custom propertiesで各パーティクルの軌跡を個別定義",el:<FireworksDemo/>},
+    {n:"Easing Functions（イージング比較）", d:"linear/ease/ease-in-out/springなど6種のイージングの動きを並べて比較",el:<EasingFunctionsDemo/>},
   ],
   mobile:[
     {n:"Swipe Actions（スワイプアクション）",d:"左右スワイプでアーカイブや削除。iOSメールが代表例",el:<SwipeDemo/>},
@@ -6970,6 +8132,10 @@ const COMPONENTS={
     {n:"セーフエリア（Safe Area）",        d:"ノッチ・ホームバーを避けたコンテンツ配置可能エリアの可視化",el:<SafeAreaDemo/>},
     {n:"生体認証UI（Biometric）",          d:"Face ID / Touch IDの認証画面。スキャン・成功・失敗を表現",el:<BiometricDemo/>},
     {n:"パラレックススクロール",           d:"背景と前景でスクロール速度を変えて奥行きを演出",el:<ParallaxScrollDemo/>},
+    {n:"Stories UI（ストーリーズ）", d:"タップで次へ・タイマー自動進行するInstagram/LINE風の縦型ストーリー",el:<StoriesUIDemo/>},
+    {n:"Swipe Cards（スワイプカード）", d:"左右スワイプでスキップ/いいねするTinder風カードUI",el:<SwipeCardsDemo/>},
+    {n:"Splash Screen（スプラッシュ）", d:"アプリ起動時のロゴ→プログレス→ホームへの遷移アニメーション",el:<AppSplashDemo/>},
+    {n:"Pinch & Zoom（ズーム操作）", d:"ホイール・ボタンでズームイン/アウト＋ドラッグでパン移動",el:<ZoomPanDemo/>},
   ],
   design:[
     {n:"カラーシステム（Color System）",    d:"12のカラーロールで役割ごとに色を管理。Material Youで動的生成",el:<M3ColorSystem/>},
@@ -6978,6 +8144,10 @@ const COMPONENTS={
     {n:"ボタン 5バリアント",               d:"Filled・Tonal・Outlined・Text・Elevated。優先度で使い分け",el:<M3Buttons/>},
     {n:"シェイプシステム（Shape Scale）",  d:"None〜Fullまで7段階の角丸定義。丸いほどフレンドリーな印象",el:<M3ShapeSystem/>},
     {n:"デートピッカー（Date Picker）",    d:"カレンダーUIで日付選択。Primary Containerのヘッダーが特徴",el:<M3DatePicker/>},
+    {n:"Spacing System（スペーシング）", d:"4・8・12・16・24・32・48・64pxの8段階スペーシングスケール",el:<SpacingSystemDemo/>},
+    {n:"Shadow System（シャドウ）", d:"xs〜xlまで5段階のelevation shadow定義",el:<ShadowSystemDemo/>},
+    {n:"Icon Grid（アイコングリッド）", d:"16/20/24/32/40/48pxのアイコンサイズ比較。適切なサイズ選びに",el:<IconGridDemo/>},
+    {n:"Dark Mode Toggle（ダークモード）", d:"ライト/システム/ダーク切替とプレビュー表示",el:<DarkModeToggleDemo/>},
   ],
 };
 
@@ -7038,14 +8208,13 @@ function App(){
           <p style={{margin:0,fontSize:12,color:"#555",lineHeight:1.5}}>{item.d}</p>
         </div>
         <div style={{margin:"10px 12px 12px",background:cur.d,borderRadius:10,
-          padding:14,border:`1px solid ${cur.a}14`}}>{item.el}</div>
+          padding:14,border:`1px solid ${cur.a}14`}}><ErrorBoundary key={i}>{item.el}</ErrorBoundary></div>
       </div>)}
     </div>
     <div style={{textAlign:"center",paddingBottom:24,color:"#1e1e2a",fontSize:11}}>✦ すべてインタラクティブ ✦</div>
   </div>);
 }
 
+ 
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-</script>
-</body>
-</html>
+</script></body></html>
