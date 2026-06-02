@@ -14,7 +14,40 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .pbwrap{width:100px;height:7px;background:#0d1830;border-radius:4px;overflow:hidden}
 .pb{height:100%;background:linear-gradient(90deg,#30b060,#60e090);border-radius:4px;transition:width .5s}
 #main{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 52px)}
-@media(max-width:700px){#main{grid-template-columns:1fr;height:auto}}
+@media(max-width:700px){
+  body{overflow-x:hidden}
+  #hdr{padding:8px 12px;gap:8px}
+  .app-title{font-size:1.05em}
+  .stats{gap:8px;font-size:.8em}
+  .pbwrap{width:70px}
+  #main{display:block;height:auto;padding-bottom:58px}
+  #left{border-right:none;border-bottom:none;padding:10px;gap:8px;overflow-y:visible}
+  #right{flex-direction:column}
+  #vwrap{min-height:38vh;height:38vh}
+  #info{max-height:22vh;overflow-y:auto}
+  #molinfo{max-width:55vw;top:8px;right:8px;padding:8px 10px}
+  .mi-sym{font-size:1.05em}.mi-name{font-size:.68em}.mi-desc{font-size:.68em}
+  .mgrid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .mcard{padding:8px 3px 6px}
+  .msym{font-size:1em}.mnm{font-size:.58em}
+  .slot{min-height:68px}
+  .ssym{font-size:1.05em}
+  .cbtn{padding:9px 3px 7px}
+  .cico{font-size:1.2em}.clbl{font-size:.62em}
+  .rbtn{padding:13px;font-size:1.05em;letter-spacing:.5px}
+  #tabnav{display:flex}
+}
+@media(min-width:701px){
+  #tabnav{display:none}
+}
+/* タブバー共通 */
+#tabnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#0b162a;border-top:1px solid #1a2e50;z-index:100;gap:0}
+.tabbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#4a6080;background:none;border:none;cursor:pointer;gap:2px;padding:6px 0;transition:color .15s;-webkit-tap-highlight-color:transparent}
+.tabbtn.active{color:#50c8ff}
+.tabbtn.active .ticon{filter:drop-shadow(0 0 6px #50c8ff88)}
+.ticon{font-size:1.45em;line-height:1}
+.tlbl{font-size:.58em;letter-spacing:.5px}
+
 #left{background:#0b162a;border-right:1px solid #1a2e50;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
 .sec{font-size:.72em;color:#506080;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
 /* Search */
@@ -130,7 +163,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 
 <div id="main">
 <div id="left">
-  <div>
+  <div id="sec-mol">
     <div class="sec">🔬 発見した物質（<span id="acnt">7</span>種 / 全<span id="totalMols">?</span>種）</div>
     <div class="swrap">
       <span class="sicon">🔍</span>
@@ -140,7 +173,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
     <div class="sbadge" id="sbadge"></div>
     <div class="mgrid" id="mgrid"></div>
   </div>
-  <div>
+  <div id="sec-rxn">
     <div class="sec">⚗️ 反応させる</div>
     <div class="rzone">
       <div class="srow" id="srow"></div>
@@ -149,15 +182,15 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
       <button class="rbtn" id="rbtn">⚡ 反応させる！</button>
     </div>
   </div>
-  <div>
+  <div id="sec-hint">
     <div class="sec">💡 ヒント</div>
     <div class="hint" id="hint">まず同じ原子を2つスロットに入れて「電気」で反応させてみよう！ 例：H + H → H₂</div>
   </div>
-  <div>
+  <div id="sec-leg">
     <div class="sec">🎨 原子の色</div>
     <div class="legrow" id="leg"></div>
   </div>
-  <div>
+  <div id="sec-log">
     <div class="sec">📖 発見した反応</div>
     <div class="dlog" id="dlog"><div class="dempty">まだ何も発見していません…</div></div>
   </div>
@@ -176,6 +209,18 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 </div>
 
 <div id="saveind"></div>
+
+<div id="tabnav">
+  <button class="tabbtn active" onclick="setTab('mol')" id="tb-mol">
+    <div class="ticon">🔬</div><div class="tlbl">物質</div>
+  </button>
+  <button class="tabbtn" onclick="setTab('rxn')" id="tb-rxn">
+    <div class="ticon">⚗️</div><div class="tlbl">反応</div>
+  </button>
+  <button class="tabbtn" onclick="setTab('log')" id="tb-log">
+    <div class="ticon">📖</div><div class="tlbl">記録</div>
+  </button>
+</div>
 <div id="toast"></div>
 <div id="ghost"><div class="gs" id="gs"></div><div class="gn" id="gn"></div></div>
 
@@ -699,6 +744,7 @@ function clickMol(key,card){
   if(idx!==-1) slots[idx]=key; else slots[1]=key;
   refreshSlots(); buildScene(slots.filter(function(s){return s;}));
   card.classList.add('flash'); setTimeout(function(){card.classList.remove('flash');},300);
+  if(window.innerWidth<=700){ setTab('rxn'); }
 }
 function selProd(key){
   var idx=slots.indexOf(null);
@@ -849,6 +895,7 @@ document.getElementById('sclear').addEventListener('click', function(){
 });
 initThree();
 buildScene(['H']);
+initMobile();
 
 // ─── MOLECULE DESCRIPTIONS (中学生向け) ─────────────────────────
 var MOL_INFO = {
@@ -992,6 +1039,52 @@ function resetState(){
   try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
   location.reload();
 }
+
+
+// ─── MOBILE TABS ──────────────────────────────────────────────
+var _activeTab='mol';
+function setTab(name){
+  if(window.innerWidth>700) return;
+  _activeTab=name;
+  ['mol','rxn','log'].forEach(function(t){
+    var tb=document.getElementById('tb-'+t);
+    if(tb) tb.classList.toggle('active',t===name);
+  });
+  var smol=document.getElementById('sec-mol');
+  var srxn=document.getElementById('sec-rxn');
+  var shnt=document.getElementById('sec-hint');
+  var sleg=document.getElementById('sec-leg');
+  var slog=document.getElementById('sec-log');
+  var rgt =document.getElementById('right');
+  var lft =document.getElementById('left');
+  if(name==='mol'){
+    smol.style.display=''; lft.style.display='';
+    srxn.style.display='none'; shnt.style.display='none';
+    sleg.style.display='none'; slog.style.display='none';
+    rgt.style.display='none';
+  } else if(name==='rxn'){
+    smol.style.display='none'; lft.style.display='';
+    srxn.style.display=''; shnt.style.display='none';
+    sleg.style.display='none'; slog.style.display='none';
+    rgt.style.display='';
+    setTimeout(resThree,50);
+  } else {
+    smol.style.display='none'; srxn.style.display='none';
+    shnt.style.display=''; sleg.style.display=''; slog.style.display='';
+    lft.style.display=''; rgt.style.display='none';
+  }
+}
+function initMobile(){
+  if(window.innerWidth>700) return;
+  setTab('mol');
+}
+window.addEventListener('resize',function(){
+  if(window.innerWidth>700){
+    ['left','right','sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.style.display='';
+    });
+  } else { setTab(_activeTab); }
+});
 
 </script>
 </body>
