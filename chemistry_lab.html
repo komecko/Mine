@@ -14,80 +14,6 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .pbwrap{width:100px;height:7px;background:#0d1830;border-radius:4px;overflow:hidden}
 .pb{height:100%;background:linear-gradient(90deg,#30b060,#60e090);border-radius:4px;transition:width .5s}
 #main{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 52px)}
-@media(max-width:700px){
-  body{overflow:hidden}
-  #hdr{padding:7px 12px;gap:6px}
-  .app-title{font-size:1em}
-  .stats{gap:6px;font-size:.75em}
-  .pbwrap{width:60px}
-  #main{display:block;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
-  /* 3Dビューが常時フルスクリーン */
-  #right{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
-  #vwrap{flex:1;min-height:0}
-  #info{display:none}
-  /* 左ドロワー：デフォルトは画面外 */
-  #left{
-    position:absolute;top:0;left:-54%;bottom:0;width:54%;
-    background:rgba(8,16,32,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border-right:1px solid #1a3060;z-index:60;
-    overflow-y:auto;overflow-x:hidden;
-    transition:left .22s cubic-bezier(.4,0,.2,1);
-    padding:6px 7px 70px;display:flex;flex-direction:column;gap:7px
-  }
-  #left.open{left:0}
-  /* セクション内タブ */
-  #sec-tabs{display:flex;gap:3px;flex-shrink:0}
-  .stab{flex:1;padding:7px 2px;background:#0d1d38;border:1px solid #1e3358;border-radius:6px;
-    color:#506080;font-size:.62em;cursor:pointer;text-align:center;line-height:1.3;
-    -webkit-tap-highlight-color:transparent}
-  .stab.active{background:#102a18;border-color:#30c060;color:#60d090}
-  /* トグルボタン群（左端に縦並び） */
-  #drawtoggle{position:absolute;top:50%;left:0;transform:translateY(-50%);
-    z-index:61;display:flex;flex-direction:column;gap:4px;
-    transition:left .22s cubic-bezier(.4,0,.2,1)}
-  #drawtoggle.open{left:54%}
-  .dtbtn{background:rgba(10,22,44,.9);border:1px solid #1a3060;border-left:none;
-    border-radius:0 8px 8px 0;color:#4a6888;padding:10px 6px;cursor:pointer;
-    font-size:1.2em;display:flex;align-items:center;justify-content:center;
-    -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
-  .dtbtn.active{background:rgba(20,50,90,.97);color:#50c8ff;border-color:#2a5090}
-  /* 物質カード：小さく */
-  .mgrid{grid-template-columns:repeat(5,1fr);gap:3px}
-  .mcard{padding:4px 2px 3px;border-radius:5px}
-  .msym{font-size:.7em;line-height:1}
-  .mnm{font-size:.44em;margin-top:1px}
-  /* スロット */
-  .slot{min-height:58px}
-  .ssym{font-size:.9em}
-  .snm{font-size:.5em}
-  .srow{gap:3px}
-  .plus{font-size:.85em}
-  /* 条件ボタン */
-  .crow{grid-template-columns:repeat(5,1fr);gap:3px}
-  .cbtn{padding:8px 2px 6px}
-  .cico{font-size:1.1em}.clbl{font-size:.56em}
-  .rbtn{padding:12px;font-size:.98em}
-  .pcard{padding:5px 7px}
-  .hint{font-size:.67em}
-  .dlog{max-height:200px}
-  .ditem{font-size:.64em}
-  #molinfo{max-width:58vw;top:8px;right:8px;padding:8px 10px}
-  .mi-sym{font-size:.95em}.mi-name{font-size:.64em}.mi-desc{font-size:.63em}
-  #saveind{bottom:8px;right:10px;font-size:.7em}
-  #tabnav{display:none!important}
-}
-  #drawtoggle{display:none!important}
-  #sec-tabs{display:none!important}
-}
-}
-/* タブバー共通 */
-#tabnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#0b162a;border-top:1px solid #1a2e50;z-index:100;gap:0}
-.tabbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#4a6080;background:none;border:none;cursor:pointer;gap:2px;padding:6px 0;transition:color .15s;-webkit-tap-highlight-color:transparent}
-.tabbtn.active{color:#50c8ff}
-.tabbtn.active .ticon{filter:drop-shadow(0 0 6px #50c8ff88)}
-.ticon{font-size:1.45em;line-height:1}
-.tlbl{font-size:.58em;letter-spacing:.5px}
-
 #left{background:#0b162a;border-right:1px solid #1a2e50;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
 .sec{font-size:.72em;color:#506080;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
 /* Search */
@@ -178,13 +104,57 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 #toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#0c2a18;border:2px solid #30c060;border-radius:12px;padding:9px 20px;font-size:.9em;color:#70ffb0;z-index:200;display:none;text-align:center;box-shadow:0 4px 24px rgba(0,200,100,.25);max-width:92vw}
 @keyframes spark{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}40%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 @keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── molinfo overlay (right) ── */
 @keyframes mifi{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 #molinfo{position:absolute;top:10px;right:10px;background:rgba(6,14,28,.92);border:1px solid #2a5090;border-radius:12px;padding:10px 14px;max-width:230px;pointer-events:none;z-index:15;display:none}
 #molinfo.show{display:block;animation:mifi .45s ease-out}
 .mi-sym{font-size:1.2em;font-weight:bold;color:#70ffb0;margin-bottom:2px;line-height:1.2}
 .mi-name{font-size:.7em;color:#50a878;margin-bottom:6px}
 .mi-desc{font-size:.7em;color:#a8c2e0;line-height:1.65}
-#saveind{position:fixed;bottom:12px;right:14px;font-size:.75em;color:#50a878;pointer-events:none;z-index:100;transition:opacity .4s}#saveind.hide{opacity:0}
+/* ── save indicator ── */
+#saveind{position:fixed;bottom:12px;right:14px;font-size:.75em;color:#50a878;pointer-events:none;z-index:100;transition:opacity .4s}
+#saveind.hide{opacity:0}
+/* ── drawer toggle (mobile only) ── */
+#drawtoggle{display:none;position:fixed;top:50%;left:0;transform:translateY(-50%);z-index:200;flex-direction:column;gap:4px}
+.dtbtn{background:rgba(10,22,44,.92);border:1px solid #1a3060;border-left:none;border-radius:0 9px 9px 0;color:#4a6888;padding:10px 7px;cursor:pointer;font-size:1.15em;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
+.dtbtn.active{background:rgba(20,50,90,.97);color:#50c8ff;border-color:#2a5090}
+/* ── sec-tabs (mobile only) ── */
+#sec-tabs{display:none;flex-shrink:0;gap:3px}
+.stab{flex:1;padding:7px 2px;background:#0d1d38;border:1px solid #1e3358;border-radius:6px;color:#506080;font-size:.62em;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
+.stab.active{background:#102a18;border-color:#30c060;color:#60d090}
+/* ── MOBILE layout ── */
+@media(max-width:700px){
+  body{overflow:hidden}
+  #hdr{padding:7px 12px;gap:6px}
+  .app-title{font-size:1em}
+  .stats{gap:6px;font-size:.75em}
+  .pbwrap{width:60px}
+  #main{display:block;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
+  #right{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
+  #vwrap{flex:1;min-height:0}
+  #info{display:none}
+  #left{position:absolute;top:0;left:-55%;bottom:0;width:55%;background:rgba(8,16,32,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-right:1px solid #1a3060;z-index:150;overflow-y:auto;transition:left .22s cubic-bezier(.4,0,.2,1);padding:6px 7px 20px;display:flex;flex-direction:column;gap:7px}
+  #left.open{left:0}
+  #drawtoggle{display:flex;top:calc(50% + 26px)}
+  #sec-tabs{display:flex;margin-bottom:2px}
+  .mgrid{grid-template-columns:repeat(5,1fr);gap:3px}
+  .mcard{padding:4px 2px 3px;border-radius:5px}
+  .msym{font-size:.7em;line-height:1}
+  .mnm{font-size:.44em;margin-top:1px}
+  .slot{min-height:58px}
+  .ssym{font-size:.9em}
+  .snm{font-size:.5em}
+  .srow{gap:3px}
+  .plus{font-size:.85em}
+  .crow{grid-template-columns:repeat(5,1fr);gap:3px}
+  .cbtn{padding:8px 2px 6px}
+  .cico{font-size:1.1em}.clbl{font-size:.56em}
+  .rbtn{padding:12px;font-size:.98em}
+  #molinfo{max-width:58vw;top:8px;right:8px;padding:8px 10px}
+  .mi-sym{font-size:.95em}.mi-name{font-size:.64em}.mi-desc{font-size:.63em}
+  #saveind{bottom:8px;right:10px;font-size:.7em}
+}
 </style>
 </head>
 <body>
@@ -197,12 +167,13 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
       <div class="pbwrap"><div class="pb" id="pb" style="width:0%"></div></div>
     </div>
     <div class="stat" style="color:#8090b0;font-size:.8em;">物質 <span id="mcnt">7</span> 種</div>
-      <button onclick="resetState()" style="background:#0d1d38;border:1px solid #2a3860;border-radius:6px;color:#506080;font-size:.75em;padding:4px 9px;cursor:pointer;" title="進捗リセット">🗑 リセット</button>
+    <button onclick="resetState()" style="background:#0d1d38;border:1px solid #2a3860;border-radius:6px;color:#506080;font-size:.75em;padding:4px 9px;cursor:pointer">🗑 リセット</button>
   </div>
 </div>
 
 <div id="main">
 <div id="left">
+  <div id="sec-tabs"><button class="stab active" data-sec="mol" onclick="showDrawerSec('mol')">🔬 物質</button><button class="stab" data-sec="rxn" onclick="showDrawerSec('rxn')">⚗️ 反応</button><button class="stab" data-sec="log" onclick="showDrawerSec('log')">📖 記録</button></div>
   <div id="sec-mol">
     <div class="sec">🔬 発見した物質（<span id="acnt">7</span>種 / 全<span id="totalMols">?</span>種）</div>
     <div class="swrap">
@@ -249,19 +220,8 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 </div>
 
 <div id="saveind"></div>
-
-<div id="tabnav">
-  <button class="tabbtn active" onclick="setTab('mol')" id="tb-mol">
-    <div class="ticon">🔬</div><div class="tlbl">物質</div>
-  </button>
-  <button class="tabbtn" onclick="setTab('rxn')" id="tb-rxn">
-    <div class="ticon">⚗️</div><div class="tlbl">反応</div>
-  </button>
-  <button class="tabbtn" onclick="setTab('log')" id="tb-log">
-    <div class="ticon">📖</div><div class="tlbl">記録</div>
-  </button>
-</div>
 <div id="toast"></div>
+<div id="drawtoggle"><div class="dtbtn" data-sec="mol" onclick="toggleDrawer('mol')">🔬</div><div class="dtbtn" data-sec="rxn" onclick="toggleDrawer('rxn')">⚗️</div><div class="dtbtn" data-sec="log" onclick="toggleDrawer('log')">📖</div></div>
 <div id="ghost"><div class="gs" id="gs"></div><div class="gn" id="gn"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -389,7 +349,6 @@ var MOLS = {
 'Fe':{sym:'Fe',ja:'鉄',atoms:[{e:'Fe',p:[0,0,0]}],bonds:[]},
 'Ca':{sym:'Ca',ja:'カルシウム',atoms:[{e:'Ca',p:[0,0,0]}],bonds:[]},
 'K': {sym:'K', ja:'カリウム', atoms:[{e:'K', p:[0,0,0]}],bonds:[]},
-// ── NEW INORGANIC (existing elements) ──
 'HClO':{sym:'HClO',ja:'次亜塩素酸（漂白剤）',atoms:[{e:'H',p:[-0.64,-0.76,0]},{e:'O',p:[0,0,0]},{e:'Cl',p:[1.1,0,0]}],bonds:[[0,1,1],[1,2,1]]},
 'H2SO3':{sym:'H₂SO₃',ja:'亜硫酸',atoms:[{e:'S',p:[0,0,0]},{e:'O',p:[0,1.45,0]},{e:'O',p:[-1.0,-0.72,0.4]},{e:'O',p:[1.0,-0.72,0.4]},{e:'H',p:[-1.85,-0.72,0.4]},{e:'H',p:[1.85,-0.72,0.4]}],bonds:[[0,1,2],[0,2,1],[0,3,1],[2,4,1],[3,5,1]]},
 'COCl2':{sym:'COCl₂',ja:'ホスゲン（猛毒ガス）',atoms:[{e:'C',p:[0,0,0]},{e:'O',p:[0,1.17,0]},{e:'Cl',p:[-1.15,-0.57,0]},{e:'Cl',p:[1.15,-0.57,0]}],bonds:[[0,1,2],[0,2,1],[0,3,1]]},
@@ -399,33 +358,25 @@ var MOLS = {
 'NaClO':{sym:'NaClO',ja:'次亜塩素酸ナトリウム（漂白剤）',atoms:[{e:'Na',p:[-1.8,0,0]},{e:'O',p:[0,0,0]},{e:'Cl',p:[1.1,0,0]}],bonds:[[0,1,1],[1,2,1]]},
 'NaNO3':{sym:'NaNO₃',ja:'硝酸ナトリウム（チリ硝石）',atoms:[{e:'Na',p:[-2.5,0,0]},{e:'N',p:[0,0,0]},{e:'O',p:[0,1.25,0]},{e:'O',p:[1.08,-0.62,0]},{e:'O',p:[-1.08,-0.62,0]}],bonds:[[1,2,2],[1,3,1],[1,4,1]]},
 'Na2S':{sym:'Na₂S',ja:'硫化ナトリウム（製紙工業）',atoms:[{e:'Na',p:[-2.0,0,0]},{e:'S',p:[0,0,0]},{e:'Na',p:[2.0,0,0]}],bonds:[[0,1,1],[1,2,1]]},
-// ── IRON COMPOUNDS ──
 'Fe2O3':{sym:'Fe₂O₃',ja:'酸化鉄(III)（赤さびの主成分）',atoms:[{e:'Fe',p:[-1.4,0.5,0]},{e:'Fe',p:[1.4,0.5,0]},{e:'O',p:[0,0.5,0]},{e:'O',p:[-0.9,-0.9,0]},{e:'O',p:[0.9,-0.9,0]}],bonds:[[0,2,1],[0,3,1],[1,2,1],[1,4,1],[0,4,1]]},
 'Fe3O4':{sym:'Fe₃O₄',ja:'四酸化三鉄（磁鉄鉱）',atoms:[{e:'Fe',p:[-2.2,0,0]},{e:'Fe',p:[0,0.8,0]},{e:'Fe',p:[2.2,0,0]},{e:'O',p:[-1.1,0.9,0]},{e:'O',p:[-1.1,-0.9,0]},{e:'O',p:[1.1,0.9,0]},{e:'O',p:[1.1,-0.9,0]}],bonds:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,5,1],[2,6,1],[1,4,1],[1,6,1]]},
-// ── CALCIUM COMPOUNDS ──
 'CaO':{sym:'CaO',ja:'酸化カルシウム（生石灰）',atoms:[{e:'Ca',p:[-0.95,0,0]},{e:'O',p:[0.95,0,0]}],bonds:[[0,1,1]]},
 'CaOH2':{sym:'Ca(OH)₂',ja:'水酸化カルシウム（消石灰）',atoms:[{e:'Ca',p:[0,0,0]},{e:'O',p:[0,1.8,0]},{e:'O',p:[0,-1.8,0]},{e:'H',p:[0.95,2.4,0]},{e:'H',p:[0.95,-2.4,0]}],bonds:[[0,1,1],[0,2,1],[1,3,1],[2,4,1]]},
 'CaCO3':{sym:'CaCO₃',ja:'炭酸カルシウム（石灰石・貝殻）',atoms:[{e:'Ca',p:[-2.5,0,0]},{e:'C',p:[0,0,0]},{e:'O',p:[0,1.28,0]},{e:'O',p:[1.1,-0.64,0]},{e:'O',p:[-1.1,-0.64,0]}],bonds:[[1,2,2],[1,3,1],[1,4,1]]},
-// ── POTASSIUM COMPOUNDS ──
 'KCl':{sym:'KCl',ja:'塩化カリウム（カリ肥料）',atoms:[{e:'K',p:[-1.1,0,0]},{e:'Cl',p:[1.1,0,0]}],bonds:[[0,1,1]]},
 'KOH':{sym:'KOH',ja:'水酸化カリウム（強アルカリ）',atoms:[{e:'K',p:[-1.8,0,0]},{e:'O',p:[0,0,0]},{e:'H',p:[0.97,0,0]}],bonds:[[0,1,1],[1,2,1]]},
 'KNO3':{sym:'KNO₃',ja:'硝酸カリウム（火薬・肥料）',atoms:[{e:'K',p:[-2.5,0,0]},{e:'N',p:[0,0,0]},{e:'O',p:[0,1.25,0]},{e:'O',p:[1.08,-0.62,0]},{e:'O',p:[-1.08,-0.62,0]}],bonds:[[1,2,2],[1,3,1],[1,4,1]]},
-// ── CHLORINATED ORGANICS ──
 'CCl4':{sym:'CCl₄',ja:'四塩化炭素（古い溶媒）',atoms:[{e:'C',p:[0,0,0]},{e:'Cl',p:[1.1,1.1,1.1]},{e:'Cl',p:[-1.1,-1.1,1.1]},{e:'Cl',p:[-1.1,1.1,-1.1]},{e:'Cl',p:[1.1,-1.1,-1.1]}],bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1]]},
 'CHCl3':{sym:'CHCl₃',ja:'クロロホルム（麻酔薬の歴史）',atoms:[{e:'C',p:[0,0,0]},{e:'H',p:[0,1.09,0]},{e:'Cl',p:[1.09,-0.37,0.88]},{e:'Cl',p:[-1.09,-0.37,0.88]},{e:'Cl',p:[0,-0.73,-1.09]}],bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1]]},
 'CH2Cl2':{sym:'CH₂Cl₂',ja:'ジクロロメタン（溶媒）',atoms:[{e:'C',p:[0,0,0]},{e:'Cl',p:[1.1,0,0.9]},{e:'Cl',p:[-1.1,0,0.9]},{e:'H',p:[0,1.0,-0.7]},{e:'H',p:[0,-1.0,-0.7]}],bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1]]},
-// ── ETHERS / EPOXIDES ──
 'DME':{sym:'CH₃OCH₃',ja:'ジメチルエーテル（代替燃料）',atoms:[{e:'O',p:[0,0,0]},{e:'C',p:[-1.4,0,0]},{e:'C',p:[1.4,0,0]},{e:'H',p:[-1.8,0.9,0.3]},{e:'H',p:[-1.8,-0.45,0.78]},{e:'H',p:[-1.8,-0.45,-0.78]},{e:'H',p:[1.8,0.9,0.3]},{e:'H',p:[1.8,-0.45,0.78]},{e:'H',p:[1.8,-0.45,-0.78]}],bonds:[[0,1,1],[0,2,1],[1,3,1],[1,4,1],[1,5,1],[2,6,1],[2,7,1],[2,8,1]]},
 'C2H4O':{sym:'C₂H₄O',ja:'エチレンオキシド（殺菌・樹脂原料）',atoms:[{e:'O',p:[0,0.85,0]},{e:'C',p:[-0.73,-0.38,0]},{e:'C',p:[0.73,-0.38,0]},{e:'H',p:[-1.2,-0.38,0.85]},{e:'H',p:[-1.2,-0.38,-0.85]},{e:'H',p:[1.2,-0.38,0.85]},{e:'H',p:[1.2,-0.38,-0.85]}],bonds:[[0,1,1],[0,2,1],[1,2,1],[1,3,1],[1,4,1],[2,5,1],[2,6,1]]},
-// ── DIENES ──
 'C4H6':{sym:'C₄H₆',ja:'1,3-ブタジエン（合成ゴム原料）',atoms:[{e:'C',p:[-1.9,0,0]},{e:'C',p:[-0.63,0,0]},{e:'C',p:[0.63,0,0]},{e:'C',p:[1.9,0,0]},{e:'H',p:[-2.4,0.9,0]},{e:'H',p:[-2.4,-0.9,0]},{e:'H',p:[-0.18,0.93,0]},{e:'H',p:[0.18,-0.93,0]},{e:'H',p:[2.4,0.9,0]},{e:'H',p:[2.4,-0.9,0]}],bonds:[[0,1,2],[1,2,1],[2,3,2],[0,4,1],[0,5,1],[1,6,1],[2,7,1],[3,8,1],[3,9,1]]},
-// ── AROMATICS ──
 'C6H5CHO':{sym:'C₆H₅CHO',ja:'ベンズアルデヒド（アーモンドの香り）',atoms:[{e:'C',p:[1.0,0,0]},{e:'C',p:[0.5,0.87,0]},{e:'C',p:[-0.5,0.87,0]},{e:'C',p:[-1.0,0,0]},{e:'C',p:[-0.5,-0.87,0]},{e:'C',p:[0.5,-0.87,0]},{e:'C',p:[2.4,0,0]},{e:'O',p:[3.6,0,0]},{e:'H',p:[2.4,-1.05,0]},{e:'H',p:[1.0,1.73,0]},{e:'H',p:[-1.0,1.73,0]},{e:'H',p:[-2.0,0,0]},{e:'H',p:[-1.0,-1.73,0]},{e:'H',p:[1.0,-1.73,0]}],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,2],[6,8,1],[1,9,1],[2,10,1],[3,11,1],[4,12,1],[5,13,1]]},
 'C6H5COOH':{sym:'C₆H₅COOH',ja:'安息香酸（食品保存料）',atoms:[{e:'C',p:[1.0,0,0]},{e:'C',p:[0.5,0.87,0]},{e:'C',p:[-0.5,0.87,0]},{e:'C',p:[-1.0,0,0]},{e:'C',p:[-0.5,-0.87,0]},{e:'C',p:[0.5,-0.87,0]},{e:'C',p:[2.4,0,0]},{e:'O',p:[3.1,1.1,0]},{e:'O',p:[3.1,-1.0,0]},{e:'H',p:[4.0,-1.0,0]},{e:'H',p:[1.0,1.73,0]},{e:'H',p:[-1.0,1.73,0]},{e:'H',p:[-2.0,0,0]},{e:'H',p:[-1.0,-1.73,0]},{e:'H',p:[1.0,-1.73,0]}],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,2],[6,8,1],[8,9,1],[1,10,1],[2,11,1],[3,12,1],[4,13,1],[5,14,1]]},
 'C8H8':{sym:'C₈H₈',ja:'スチレン（ポリスチレン原料）',atoms:[{e:'C',p:[1.0,0,0]},{e:'C',p:[0.5,0.87,0]},{e:'C',p:[-0.5,0.87,0]},{e:'C',p:[-1.0,0,0]},{e:'C',p:[-0.5,-0.87,0]},{e:'C',p:[0.5,-0.87,0]},{e:'C',p:[2.3,0,0]},{e:'C',p:[3.4,0.7,0]},{e:'H',p:[2.3,-1.0,0]},{e:'H',p:[4.3,0.4,0]},{e:'H',p:[3.3,1.65,0]},{e:'H',p:[1.0,1.73,0]},{e:'H',p:[-1.0,1.73,0]},{e:'H',p:[-2.0,0,0]},{e:'H',p:[-1.0,-1.73,0]},{e:'H',p:[1.0,-1.73,0]}],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,2],[6,8,1],[7,9,1],[7,10,1],[1,11,1],[2,12,1],[3,13,1],[4,14,1],[5,15,1]]},
 'C10H8':{sym:'C₁₀H₈',ja:'ナフタレン（防虫剤）',atoms:[{e:'C',p:[0,0.7,0]},{e:'C',p:[-1.2,1.4,0]},{e:'C',p:[-2.4,0.7,0]},{e:'C',p:[-2.4,-0.7,0]},{e:'C',p:[-1.2,-1.4,0]},{e:'C',p:[0,-0.7,0]},{e:'C',p:[1.2,-1.4,0]},{e:'C',p:[2.4,-0.7,0]},{e:'C',p:[2.4,0.7,0]},{e:'C',p:[1.2,1.4,0]},{e:'H',p:[-1.2,2.4,0]},{e:'H',p:[-3.3,1.1,0]},{e:'H',p:[-3.3,-1.1,0]},{e:'H',p:[-1.2,-2.4,0]},{e:'H',p:[1.2,-2.4,0]},{e:'H',p:[3.3,-1.1,0]},{e:'H',p:[3.3,1.1,0]},{e:'H',p:[1.2,2.4,0]}],bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[5,6,1],[6,7,2],[7,8,1],[8,9,2],[9,0,1],[1,10,1],[2,11,1],[3,12,1],[4,13,1],[6,14,1],[7,15,1],[8,16,1],[9,17,1]]},
-// ── ESTERS ──
-'EtAc':{sym:'CH₃COOC₂H₅',ja:'酢酸エチル（マニキュア溶媒・接着剤）',atoms:[{e:'C',p:[-1.5,0,0]},{e:'C',p:[0,0,0]},{e:'O',p:[0.7,1.1,0]},{e:'O',p:[0.7,-0.8,0]},{e:'C',p:[2.1,-0.8,0]},{e:'C',p:[3.3,0,0]},{e:'H',p:[-1.9,0.9,0.3]},{e:'H',p:[-1.9,-0.45,0.78]},{e:'H',p:[-1.9,-0.45,-0.78]},{e:'H',p:[2.1,-1.5,0.6]},{e:'H',p:[2.1,-1.5,-0.6]},{e:'H',p:[4.1,0,0.5]},{e:'H',p:[3.5,0.85,0]},{e:'H',p:[3.5,-0.5,-0.7]}],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[4,5,1],[0,6,1],[0,7,1],[0,8,1],[4,9,1],[4,10,1],[5,11,1],[5,12,1],[5,13,1]]}
+'EtAc':{sym:'CH₃COOC₂H₅',ja:'酢酸エチル（マニキュア溶媒）',atoms:[{e:'C',p:[-1.5,0,0]},{e:'C',p:[0,0,0]},{e:'O',p:[0.7,1.1,0]},{e:'O',p:[0.7,-0.8,0]},{e:'C',p:[2.1,-0.8,0]},{e:'C',p:[3.3,0,0]},{e:'H',p:[-1.9,0.9,0.3]},{e:'H',p:[-1.9,-0.45,0.78]},{e:'H',p:[-1.9,-0.45,-0.78]},{e:'H',p:[2.1,-1.5,0.6]},{e:'H',p:[2.1,-1.5,-0.6]},{e:'H',p:[4.1,0,0.5]},{e:'H',p:[3.5,0.85,0]},{e:'H',p:[3.5,-0.5,-0.7]}],bonds:[[0,1,1],[1,2,2],[1,3,1],[3,4,1],[4,5,1],[0,6,1],[0,7,1],[0,8,1],[4,9,1],[4,10,1],[5,11,1],[5,12,1],[5,13,1]]}
 };
 
 // ─── REACTIONS ────────────────────────────────────────────────
@@ -519,43 +470,34 @@ var RXNS = [
 {key:mk(['C2H4']),     cond:'catalyst',products:['PE'],    eq:'nC₂H₄ → (C₂H₄)n',      name:'🛍️ ポリエチレンの合成！',desc:'エチレンが重合してポリエチレンに！レジ袋・ペットボトル・包装材に使われています！',fx:'🎉',pts:400},
 {key:mk(['C2H3Cl']),   cond:'catalyst',products:['PVC'],   eq:'nC₂H₃Cl → (C₂H₃Cl)n',  name:'🔧 ポリ塩化ビニルの合成！',desc:'塩化ビニルが重合してPVCプラスチックに！水道管・窓枠・レコード盤に使われています！',fx:'🎉',pts:400},
 {key:mk(['C5H8']),     cond:'catalyst',products:['NR'],    eq:'nC₅H₈ → (C₅H₈)n',      name:'🌿 天然ゴムの合成！',   desc:'イソプレンが重合して天然ゴムに！タイヤ・輪ゴム・手袋に使われています！',fx:'🎉',pts:450},
-// ── NEW INORGANIC ──
-{key:mk(['Cl2','H2O']),   cond:'cool',    products:['HClO','HCl'],    eq:'Cl₂ + H₂O → HClO + HCl',         name:'🟢 次亜塩素酸の生成',     desc:'塩素が水に溶けて次亜塩素酸と塩酸に！漂白剤・消毒薬の原料です。',              fx:'💧',pts:120},
-{key:mk(['H2O','SO2']),   cond:'cool',    products:['H2SO3'],          eq:'SO₂ + H₂O → H₂SO₃',              name:'🌧 亜硫酸の生成',         desc:'SO₂が雨水に溶けると酸性雨（亜硫酸雨）の原因になります。',                     fx:'💧',pts:110},
-{key:mk(['CO','Cl2']),    cond:'catalyst',products:['COCl2'],           eq:'CO + Cl₂ → COCl₂',                name:'☠️ ホスゲンの生成',       desc:'猛毒ガス。第一次世界大戦で化学兵器として使われた歴史があります。',             fx:'⚗️',pts:160},
-{key:mk(['C','S']),       cond:'heat',    products:['CS2'],             eq:'C + 2S → CS₂',                   name:'💛 二硫化炭素の生成',     desc:'炭素と硫黄から作られる有機溶媒。ゴム加工・ビスコース繊維の製造に使います。',   fx:'🔥',pts:110},
-{key:mk(['NH3']),         cond:'electric',products:['N2H4'],            eq:'2NH₃ → N₂H₄ + H₂',              name:'🚀 ヒドラジンの合成',     desc:'ロケットの姿勢制御燃料として使われる強力な化合物！',                          fx:'⚡',pts:200},
-{key:mk(['CH4','NH3']),   cond:'heat',    products:['HCN'],             eq:'CH₄ + NH₃ → HCN + 3H₂',         name:'☠️ シアン化水素の合成',   desc:'アンドルソフ法。猛毒ですがアクリル繊維・農薬の合成に工業的に使われます。',     fx:'🔥',pts:180},
-{key:mk(['Cl2','NaOH']),  cond:'cool',    products:['NaClO','NaCl'],   eq:'Cl₂ + 2NaOH → NaClO + NaCl + H₂O',name:'🫧 次亜塩素酸ナトリウムの生成',desc:'漂白剤（ハイターなど）の主成分！衣類の漂白・カビ取りに使われます。',        fx:'💧',pts:140},
-{key:mk(['HNO3','NaOH']), cond:'cool',    products:['NaNO3'],           eq:'HNO₃ + NaOH → NaNO₃ + H₂O',     name:'⚪ 硝酸ナトリウムの生成', desc:'チリ硝石として天然にも存在する肥料。食肉の発色剤にも使われます。',              fx:'💧',pts:120},
-{key:mk(['Na','S']),      cond:'heat',    products:['Na2S'],            eq:'2Na + S → Na₂S',                 name:'🟡 硫化ナトリウムの生成', desc:'製紙工業（パルプ製造）で大量に使われる重要な工業薬品です。',                   fx:'🔥',pts:100},
-// ── IRON ──
-{key:mk(['Fe','O2']),     cond:'heat',    products:['Fe2O3'],           eq:'4Fe + 3O₂ → 2Fe₂O₃',            name:'🟫 さびの生成（酸化鉄）', desc:'鉄が酸素と水分で酸化されてさびに！雨や湿気でゆっくり進む身近な反応です。',   fx:'🔥',pts:100},
-{key:mk(['Fe','O2']),     cond:'catalyst',products:['Fe3O4'],           eq:'3Fe + 2O₂ → Fe₃O₄',             name:'🔮 四酸化三鉄の生成',     desc:'鉄の不完全酸化でできる黒い磁性体。磁石に引きつけられる鉄の酸化物！',          fx:'⚗️',pts:130},
-// ── CALCIUM ──
-{key:mk(['Ca','O2']),     cond:'heat',    products:['CaO'],             eq:'2Ca + O₂ → 2CaO',               name:'⬜ 生石灰の生成',         desc:'石灰石を高温で焼くと生石灰（CaO）に！コンクリート・漆喰の材料です。',         fx:'🔥',pts:100},
-{key:mk(['CaO','H2O']),   cond:'heat',    products:['CaOH2'],           eq:'CaO + H₂O → Ca(OH)₂',           name:'⬜ 消石灰の生成',         desc:'生石灰に水を加えると消石灰に！グラウンドのライン引き・土壌改良に使われます。', fx:'🔥',pts:110},
-{key:mk(['CO2','CaOH2']), cond:'cool',    products:['CaCO3'],           eq:'Ca(OH)₂ + CO₂ → CaCO₃ + H₂O',  name:'🏔 炭酸カルシウムの生成', desc:'消石灰水に息を吹き込むと白濁！石灰石・大理石・チョーク・貝殻の主成分です。',  fx:'💧',pts:110},
-// ── POTASSIUM ──
-{key:mk(['Cl2','K']),     cond:'heat',    products:['KCl'],             eq:'2K + Cl₂ → 2KCl',               name:'🟣 塩化カリウムの生成',   desc:'農業に欠かせないカリ肥料の主成分！低ナトリウム塩の代替品にもなります。',      fx:'🔥',pts:100},
-{key:mk(['H2O','K']),     cond:'heat',    products:['KOH'],             eq:'2K + 2H₂O → 2KOH + H₂',        name:'🟣 水酸化カリウムの生成', desc:'カリウムが水と激しく反応！強アルカリ性。石鹸・電池の電解液に使われます。',    fx:'🔥',pts:110},
-{key:mk(['HNO3','KOH']),  cond:'cool',    products:['KNO3'],            eq:'KOH + HNO₃ → KNO₃ + H₂O',      name:'💥 硝酸カリウム（火薬の原料）！',desc:'黒色火薬（木炭＋硫黄＋硝酸カリウム）の主成分！古来から花火・爆薬に使われてきました。',fx:'❄️',pts:200},
-// ── CHLORINATED ORGANICS ──
-{key:mk(['CH4','Cl2']),   cond:'heat',    products:['CCl4'],            eq:'CH₄ + 4Cl₂ → CCl₄ + 4HCl',     name:'🟢 四塩化炭素の合成',     desc:'かつてドライクリーニングに使われた溶媒。現在はオゾン層破壊物質として規制されています。',fx:'🔥',pts:150},
-{key:mk(['CCl4','H2']),   cond:'catalyst',products:['CHCl3'],           eq:'CCl₄ + H₂ → CHCl₃ + HCl',      name:'🟢 クロロホルムの合成',   desc:'19世紀に外科手術の麻酔薬として使われた歴史ある化合物。現在は有機合成の原料です。',fx:'⚗️',pts:140},
-{key:mk(['CH4','Cl2']),   cond:'catalyst',products:['CH2Cl2'],          eq:'CH₄ + 2Cl₂ → CH₂Cl₂ + 2HCl',  name:'🟢 ジクロロメタンの合成', desc:'塗料剥がしや医薬品製造の溶媒として使われます。',                              fx:'⚗️',pts:130},
-// ── ETHERS / EPOXIDES ──
-{key:mk(['CH3OH']),       cond:'catalyst',products:['DME'],             eq:'2CH₃OH → CH₃OCH₃ + H₂O',       name:'💨 ジメチルエーテルの合成',desc:'メタノール2つが脱水縮合！ディーゼル代替燃料として注目の化合物。',              fx:'⚗️',pts:160},
-{key:mk(['C2H4','O2']),   cond:'catalyst',products:['C2H4O'],           eq:'C₂H₄ + ½O₂ → C₂H₄O',          name:'🔺 エチレンオキシドの合成',desc:'エチレンの三角形構造の酸化物。エチレングリコール・界面活性剤・殺菌剤の原料です。',fx:'⚗️',pts:190},
-// ── DIENE ──
-{key:mk(['C2H2','C2H4']), cond:'heat',    products:['C4H6'],            eq:'C₂H₂ + C₂H₄ → C₄H₆ + H₂',     name:'🌿 1,3-ブタジエンの合成',desc:'アセチレンとエチレンからブタジエンが！合成ゴム（SBRなど）の主原料です。',      fx:'🔥',pts:210},
-// ── AROMATICS ──
-{key:mk(['C7H8','O2']),   cond:'catalyst',products:['C6H5CHO'],         eq:'C₇H₈ + O₂ → C₆H₅CHO + H₂O',   name:'🌸 ベンズアルデヒドの合成',desc:'トルエンを酸化してベンズアルデヒドに。アーモンドに似た甘い香り！香料に使われます。',fx:'⚗️',pts:220},
-{key:mk(['C7H8','O2']),   cond:'heat',    products:['C6H5COOH'],        eq:'C₇H₈ + 3/2O₂ → C₆H₅COOH + H₂O',name:'🍓 安息香酸の合成',      desc:'トルエンを加熱酸化！食品保存料（E210）として清涼飲料水などに使われます。',     fx:'🔥',pts:200},
-{key:mk(['C2H2','C6H6']), cond:'catalyst',products:['C8H8'],            eq:'C₆H₆ + C₂H₂ → C₈H₈',          name:'🔷 スチレンの合成',       desc:'ベンゼンとアセチレンからスチレンが！発泡スチロール（ポリスチレン）の原料です。', fx:'⚗️',pts:230},
-{key:mk(['C6H6']),        cond:'heat',    products:['C10H8'],           eq:'2C₆H₆ → C₁₀H₈ + C₂H₂',        name:'🔮 ナフタレンの合成',     desc:'ベンゼン2つが縮合して二環構造に。防虫剤（タンス用）の成分です！',              fx:'🔥',pts:250},
-// ── ESTER ──
-{key:mk(['CH3COOH','C2H5OH']),cond:'catalyst',products:['EtAc'],       eq:'CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O',name:'🍬 酢酸エチルの合成',desc:'酢酸とエタノールからエステルが！甘いフルーティーな香りのマニキュア除光液・接着剤の溶媒です。',fx:'⚗️',pts:200},
+{key:mk(['Cl2','H2O']),   cond:'cool',    products:['HClO','HCl'],   eq:'Cl₂ + H₂O → HClO + HCl',           name:'🟢 次亜塩素酸の生成',      desc:'漂白剤・消毒薬の原料！',                    fx:'💧',pts:120},
+{key:mk(['H2O','SO2']),   cond:'cool',    products:['H2SO3'],         eq:'SO₂ + H₂O → H₂SO₃',                name:'🌧 亜硫酸の生成',          desc:'酸性雨の原因物質の一つです。',              fx:'💧',pts:110},
+{key:mk(['CO','Cl2']),    cond:'catalyst',products:['COCl2'],          eq:'CO + Cl₂ → COCl₂',                  name:'☠️ ホスゲンの生成',        desc:'第一次大戦で使われた猛毒ガス。',            fx:'⚗️',pts:160},
+{key:mk(['C','S']),       cond:'heat',    products:['CS2'],            eq:'C + 2S → CS₂',                      name:'💛 二硫化炭素の生成',      desc:'ゴム加工・繊維製造に使う有機溶媒。',        fx:'🔥',pts:110},
+{key:mk(['NH3']),         cond:'electric',products:['N2H4'],           eq:'2NH₃ → N₂H₄ + H₂',                 name:'🚀 ヒドラジンの合成',      desc:'ロケットの姿勢制御燃料！',                  fx:'⚡',pts:200},
+{key:mk(['CH4','NH3']),   cond:'heat',    products:['HCN'],            eq:'CH₄ + NH₃ → HCN + 3H₂',             name:'☠️ シアン化水素の合成',    desc:'猛毒だがアクリル繊維の原料に使われます。',  fx:'🔥',pts:180},
+{key:mk(['Cl2','NaOH']),  cond:'cool',    products:['NaClO','NaCl'],  eq:'Cl₂ + 2NaOH → NaClO + NaCl + H₂O', name:'🫧 次亜塩素酸ナトリウムの生成',desc:'ハイターなど漂白剤の主成分！',             fx:'💧',pts:140},
+{key:mk(['HNO3','NaOH']), cond:'cool',    products:['NaNO3'],          eq:'HNO₃ + NaOH → NaNO₃ + H₂O',        name:'⚪ 硝酸ナトリウムの生成',  desc:'チリ硝石として天然にも存在する肥料。',      fx:'💧',pts:120},
+{key:mk(['Na','S']),      cond:'heat',    products:['Na2S'],           eq:'2Na + S → Na₂S',                    name:'🟡 硫化ナトリウムの生成',  desc:'製紙工業で大量に使われる化学品。',          fx:'🔥',pts:100},
+{key:mk(['Fe','O2']),     cond:'heat',    products:['Fe2O3'],          eq:'4Fe + 3O₂ → 2Fe₂O₃',               name:'🟫 さびの生成',            desc:'鉄が空気と水分で酸化されてさびに！',        fx:'🔥',pts:100},
+{key:mk(['Fe','O2']),     cond:'catalyst',products:['Fe3O4'],          eq:'3Fe + 2O₂ → Fe₃O₄',                name:'🔮 磁鉄鉱の生成',          desc:'磁石に引きつけられる黒い鉄の酸化物！',      fx:'⚗️',pts:130},
+{key:mk(['Ca','O2']),     cond:'heat',    products:['CaO'],            eq:'2Ca + O₂ → 2CaO',                   name:'⬜ 生石灰の生成',           desc:'コンクリート・漆喰の材料。',                fx:'🔥',pts:100},
+{key:mk(['CaO','H2O']),   cond:'heat',    products:['CaOH2'],          eq:'CaO + H₂O → Ca(OH)₂',              name:'⬜ 消石灰の生成',           desc:'グラウンドのライン引きに使われます！',      fx:'🔥',pts:110},
+{key:mk(['CO2','CaOH2']), cond:'cool',    products:['CaCO3'],          eq:'Ca(OH)₂ + CO₂ → CaCO₃ + H₂O',     name:'🏔 炭酸カルシウムの生成',  desc:'石灰石・大理石・チョーク・貝殻の主成分！', fx:'💧',pts:110},
+{key:mk(['Cl2','K']),     cond:'heat',    products:['KCl'],            eq:'2K + Cl₂ → 2KCl',                  name:'🟣 塩化カリウムの生成',    desc:'カリ肥料の主成分！',                        fx:'🔥',pts:100},
+{key:mk(['H2O','K']),     cond:'heat',    products:['KOH'],            eq:'2K + 2H₂O → 2KOH + H₂',            name:'🟣 水酸化カリウムの生成',  desc:'石鹸・電池の電解液に使われます。',          fx:'🔥',pts:110},
+{key:mk(['HNO3','KOH']),  cond:'cool',    products:['KNO3'],           eq:'KOH + HNO₃ → KNO₃ + H₂O',         name:'💥 硝酸カリウム（火薬の原料）！', desc:'黒色火薬の主成分！花火はこれで光ります。',fx:'❄️',pts:200},
+{key:mk(['CH4','Cl2']),   cond:'heat',    products:['CCl4'],           eq:'CH₄ + 4Cl₂ → CCl₄ + 4HCl',         name:'🟢 四塩化炭素の合成',      desc:'オゾン層破壊物質として現在は規制。',        fx:'🔥',pts:150},
+{key:mk(['CCl4','H2']),   cond:'catalyst',products:['CHCl3'],          eq:'CCl₄ + H₂ → CHCl₃ + HCl',          name:'🟢 クロロホルムの合成',    desc:'19世紀に麻酔薬として使われた化合物。',      fx:'⚗️',pts:140},
+{key:mk(['CH4','Cl2']),   cond:'catalyst',products:['CH2Cl2'],         eq:'CH₄ + 2Cl₂ → CH₂Cl₂ + 2HCl',      name:'🟢 ジクロロメタンの合成',  desc:'塗料はがしや医薬品製造の溶媒。',            fx:'⚗️',pts:130},
+{key:mk(['CH3OH']),       cond:'catalyst',products:['DME'],            eq:'2CH₃OH → CH₃OCH₃ + H₂O',           name:'💨 ジメチルエーテルの合成',desc:'ディーゼル代替燃料として注目。',            fx:'⚗️',pts:160},
+{key:mk(['C2H4','O2']),   cond:'catalyst',products:['C2H4O'],          eq:'C₂H₄ + ½O₂ → C₂H₄O',              name:'🔺 エチレンオキシドの合成',desc:'界面活性剤・殺菌剤の原料。',                fx:'⚗️',pts:190},
+{key:mk(['C2H2','C2H4']), cond:'heat',    products:['C4H6'],           eq:'C₂H₂ + C₂H₄ → C₄H₆ + H₂',         name:'🌿 1,3-ブタジエンの合成',  desc:'合成ゴムの主原料！',                        fx:'🔥',pts:210},
+{key:mk(['C7H8','O2']),   cond:'catalyst',products:['C6H5CHO'],        eq:'C₇H₈ + O₂ → C₆H₅CHO + H₂O',       name:'🌸 ベンズアルデヒドの合成',desc:'アーモンドに似た甘い香り！',                fx:'⚗️',pts:220},
+{key:mk(['C7H8','O2']),   cond:'heat',    products:['C6H5COOH'],       eq:'C₇H₈ + 3/2O₂ → C₆H₅COOH + H₂O',  name:'🍓 安息香酸の合成',        desc:'清涼飲料水の食品保存料（E210）。',          fx:'🔥',pts:200},
+{key:mk(['C2H2','C6H6']), cond:'catalyst',products:['C8H8'],           eq:'C₆H₆ + C₂H₂ → C₈H₈',              name:'🔷 スチレンの合成',        desc:'発泡スチロール（ポリスチレン）の原料。',    fx:'⚗️',pts:230},
+{key:mk(['C6H6']),        cond:'heat',    products:['C10H8'],          eq:'2C₆H₆ → C₁₀H₈ + C₂H₂',            name:'🔮 ナフタレンの合成',      desc:'防虫剤（タンス用）の成分！',                fx:'🔥',pts:250},
+{key:mk(['CH3COOH','C2H5OH']),cond:'catalyst',products:['EtAc'],      eq:'CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O',name:'🍬 酢酸エチルの合成',desc:'マニキュア除光液の甘い香りの正体！',       fx:'⚗️',pts:200},
 
 {key:mk(['C6H12O6']),  cond:'catalyst',products:['C2H5OH'],eq:'C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂',name:'🍺 発酵！',          desc:'糖をアルコール発酵するとエタノール（お酒）とCO₂が！パンやビールの製造はこの原理です！',fx:'⚗️',pts:250}
 ];
@@ -784,7 +726,7 @@ function clickMol(key,card){
   if(idx!==-1) slots[idx]=key; else slots[1]=key;
   refreshSlots(); buildScene(slots.filter(function(s){return s;}));
   card.classList.add('flash'); setTimeout(function(){card.classList.remove('flash');},300);
-  if(window.innerWidth<=700){ openDrawer('rxn'); }
+  if(window.innerWidth<=700) openDrawer('rxn');
 }
 function selProd(key){
   var idx=slots.indexOf(null);
@@ -928,7 +870,7 @@ var _resumed=loadState();
 document.getElementById('totalMols').textContent=Object.keys(MOLS).length;
 refreshGrid(); refreshSlots(); refreshConds(); buildLegend(); updateHint();
 document.getElementById('score').textContent=score; updProgress();
-if(_resumed){ toast('📂 前回の続きから再開します！ スコア：'+score+'pts'); }
+if(_resumed) toast('📂 前回の続きから再開します！ スコア：'+score+'pts');
 document.getElementById('rbtn').addEventListener('click', doReaction);
 document.getElementById('search').addEventListener('input', refreshGrid);
 document.getElementById('sclear').addEventListener('click', function(){
@@ -936,222 +878,90 @@ document.getElementById('sclear').addEventListener('click', function(){
 });
 initThree();
 buildScene(['H']);
-initMobile();
+if(window.innerWidth<=700) initMobile();
 
-// ─── MOLECULE DESCRIPTIONS (中学生向け) ─────────────────────────
-var MOL_INFO = {
-'H':   '水素原子1つだけの状態。宇宙で最も多い元素で、太陽や星の主な成分です。',
-'O':   '酸素原子1つだけの状態。空気中では通常O₂として存在します。とても反応しやすい原子です。',
-'C':   '炭素原子1つだけの状態。生き物の体・プラスチック・ダイヤモンドなど、あらゆる有機物の基本です。',
-'N':   '窒素原子1つだけの状態。空気の約78%は窒素分子N₂でできています。',
-'S':   '硫黄原子1つだけの状態。火山の噴火口の近くに黄色い粉として見られます。',
-'Cl':  '塩素原子1つだけの状態。とても反応しやすく、ふつうはCl₂（塩素ガス）の形で存在します。',
-'Na':  'ナトリウム原子1つだけの状態。水に触れると激しく反応する金属です。食塩（NaCl）の材料です。',
-'Fe':  '鉄原子1つだけの状態。地球で最もよく使われる金属で、橋・ビル・自動車など身の回りに溢れています。さびやすいため、鉄鋼にはメッキや塗装で保護します。',
-'Ca':  'カルシウム原子1つだけの状態。骨や歯の主成分で、私たちの体に欠かせない元素です。石灰石（CaCO₃）の形で地球に大量に存在します。',
-'K':   'カリウム原子1つだけの状態。植物の成長に必要な「カリ肥料」の主成分。体内では神経や筋肉の働きを調節しています。',
-'H2':  '水素原子2つが結びついた気体。とても軽くて燃えやすく、燃やすと水になります。未来の「クリーンな燃料」として注目されており、ロケットの燃料にも使われています。',
-'O2':  '酸素原子2つが二重結合でくっついた気体。私たちが呼吸するのに欠かせません。空気の約20%を占めています。物が燃えるのも酸素があるからです。',
-'N2':  '窒素原子2つが三重結合でつながった気体。空気の約78%を占めています。とても安定しているため、食品の保存にも使われます。',
-'Cl2': '塩素原子2つが結びついた黄緑色の気体。プールや水道水の消毒に使われますが、高濃度だと有毒な危険な気体です。',
-'CO':  '炭素と酸素が三重結合した無色無臭の気体。「一酸化炭素中毒」の原因物質。不完全燃焼（酸素が少ない状態での燃焼）で発生します。室内では十分な換気が必要です！',
-'NaCl':'食塩の化学式。ナトリウムイオンと塩化物イオンが規則正しく並んでできています。料理の味付けだけでなく、体内の水分バランスや神経の働きにも欠かせません。',
-'H2O': '水の分子式。地球上の生き物すべてに必要な物質。分子が折れ線形をしているため多くの物質を溶かす「万能溶媒」と呼ばれます。地球の表面の約70%を覆っています。',
-'CO2': '炭素に酸素2つがついた直線形の気体。動物の呼吸や燃焼で発生します。植物は光合成でこれを使って養分を作ります。炭酸飲料のシュワシュワの正体でもあり、温室効果ガスとして地球温暖化にも関係しています。',
-'HCl': '塩化水素という気体で、水に溶かすと「塩酸」になります。胃の中にも薄い塩酸が含まれ、食べ物を消化するのに役立っています。金属を溶かす強い酸です。',
-'NH3': 'アンモニア。ツーンとした独特の臭いがある気体です。農業用肥料の原料として世界中で大量に作られています。この合成法（ハーバー・ボッシュ法）がなければ、今の人口を養う食料を作れなかったとも言われています。',
-'SO2': '二酸化硫黄。火山の噴火口から出る刺激臭のある気体です。石炭を燃やすときにも発生し、雨に溶けると「酸性雨」になります。',
-'NO':  '一酸化窒素。無色の気体で、雷が落ちるときにも発生します。体の中でも作られ、血管を広げて血流を良くする働きをしています。',
-'H2S': '硫化水素。温泉特有の「卵が腐ったような臭い」の正体です！火山ガスや下水道からも発生します。高濃度になると鼻がまひして臭わなくなる危険な気体です。',
-'NaOH':'水酸化ナトリウム（苛性ソーダ）。強いアルカリ性の固体です。石鹸・紙・アルミニウムの製造に使われます。水に溶けると高い熱を出し、皮膚を傷つけるので注意が必要です。',
-'CH4': 'メタン。天然ガスの主成分で、家庭のガスコンロの燃料です。炭素1つに水素4つが正四面体形についています。牛のげっぷにも含まれており、強力な温室効果ガスでもあります。',
-'SO3': '三酸化硫黄。硫酸（H₂SO₄）を作るための重要な中間物質です。水と反応するとすぐに硫酸になります。',
-'NO2': '二酸化窒素。赤茶色をした有毒な気体。光化学スモッグの原因物質の一つで、自動車の排気ガスに含まれます。',
-'O3':  'オゾン。酸素原子3つからできた気体。地上約20〜30kmの「オゾン層」に集まっており、太陽の有害な紫外線を吸収して地球の生き物を守っています。',
-'H2O2':'過酸化水素。「オキシドール（3%水溶液）」の主成分で、傷口の消毒に使われます。漂白剤にも使われます。',
-'H2SO4':'硫酸。非常に強い酸で、車のバッテリー・肥料・塗料など様々な製品の製造に使われます。水と混合すると高い熱を発生させる危険な物質です。',
-'HNO3':'硝酸。強い酸の一つ。農業用肥料・火薬・染料などの製造に使われます。',
-'CH2O':'ホルムアルデヒド。防腐剤「ホルマリン」の主成分です。理科室の生物標本の保存に使われます。',
-'CH3OH':'メタノール（メチルアルコール）。エタノールに似ていますが、飲んだり吸い込んだりすると失明や死に至る危険な物質です。',
-'C2H2':'アセチレン。炭素2つが三重結合でつながっています。ガス溶接で使われる炎の燃料で、酸素と混合すると3000℃以上になります！',
-'C2H4':'エチレン。炭素2つが二重結合でつながっています。「ポリエチレン」の原料で、プラスチック袋が作られます。果物を熟させる植物ホルモンでもあります。',
-'C2H6':'エタン。炭素2つが単結合でつながったシンプルな気体。天然ガスに少量含まれます。',
-'C3H6':'プロピレン。炭素3つからなり炭素間に二重結合が一つあります。「ポリプロピレン」の原料で、食品容器・自動車バンパーなど幅広く使われます。',
-'C2H5OH':'エタノール（エチルアルコール）。お酒の成分で、ビール・ワイン・日本酒などに含まれます。消毒薬としても使われます。未成年者の飲酒は法律で禁止されています。',
-'NH4Cl':'塩化アンモニウム。白色の固体で水に溶けます。化学肥料・乾電池・咳止め薬などに使われます。',
-'NH4NO3':'硝酸アンモニウム。農業用肥料として世界中で使われています。しかし高温や強い衝撃を加えると爆発することがあり危険物として扱われます。',
-'H2CO3':'炭酸。CO₂が水に溶けてできる弱い酸です。炭酸飲料のシュワシュワはこの反応によるものです。',
-'Na2CO3':'炭酸ナトリウム（ソーダ灰）。白色の固体でアルカリ性が強い物質です。ガラス・紙・石鹸の製造に欠かせません。',
-'NaHCO3':'炭酸水素ナトリウム（重曹）。お菓子作りのベーキングパウダーに使われています。加熱するとCO₂が発生してケーキが膨らみます。胃薬にも使われます。',
-'N2O': '一酸化二窒素（笑気ガス）。吸うと笑い出したくなる感覚が起きることからこの名がつきました。医療の現場では麻酔薬として使われます。',
-'Urea':'尿素。植物に必要な窒素を含む肥料として世界中で使われています。実は私たちの体の中でも作られる物質で、おしっこの成分の一つです。',
-'Na2SO4':'硫酸ナトリウム（芒硝）。白色の固体で洗濯洗剤・ガラス製造・医薬品などに使われます。',
-'CH3CHO':'アセトアルデヒド。お酒を飲んだ後に体内でできる物質で、二日酔いや頭痛の原因の一つです。',
-'HCOOH':'ギ酸（蟻酸）。アリ・ミツバチ・イラクサなどが毒として持っている物質です（Formica＝アリのラテン語が名前の由来）。',
-'C3H8': 'プロパン（LPガス）。カセットコンロの燃料です。圧力をかけると液化するためボンベに詰めて持ち運べます。',
-'C4H10':'ブタン。使い捨てライターやカセットコンロの燃料です。常温でも液化しやすく、ライターの中では液体になっています。',
-'CH3Cl':'クロロメタン（塩化メチル）。オゾン層を破壊する性質があるため、現在の冷媒としては使われていません。化学品の合成原料に使われます。',
-'C2H5Cl':'クロロエタン。工業的な化学合成に使われます。塩素が一つついたエタンです。',
-'C2H3Cl':'塩化ビニル（クロロエチレン）。「PVC（ポリ塩化ビニル）」の原料となるモノマーです。水道管・床材・窓枠など建築に多用されます。',
-'C3H7OH':'1-プロパノール。消毒薬や溶媒として使われるアルコールの一種です。',
-'C3H6O':'アセトン。マニキュアの「除光液」に含まれている有機溶媒です。水にも油にも溶ける万能な溶媒です。',
-'C7H8': 'トルエン。塗料・接着剤・印刷インクの溶媒として使われます。ガソリンにも少量含まれています。',
-'C6H5OH':'フェノール。消毒薬や樹脂（フェノール樹脂）の原料です。フェノール樹脂はプリント基板・鍋の取っ手など熱に強い製品に使われます。',
-'C6H12O6':'グルコース（ぶどう糖）。生き物の主なエネルギー源となる糖です。脳はグルコースだけをエネルギーとして使います。光合成で植物が作る有機物の基本でもあります。',
-'C2H6O2':'エチレングリコール。自動車の冷却水（クーラント液）として使われる「不凍液」の主成分です。ペットボトルの素材PETの原料でもあります。',
-'CH3NH2':'メチルアミン。魚や肉が腐敗するときに発生する「生臭さ」の主な原因物質の一つです。',
-'C5H8': 'イソプレン。天然ゴムの基本単位となるモノマーです。この分子が何万個もつながって天然ゴムになります。',
-'NaAce':'酢酸ナトリウム。「使い捨てカイロ（ホッカイロ）」の中に入っている物質です！過冷却液体が固まって熱（約58℃）を発生させます。',
-'C6H6': 'ベンゼン。6つの炭素が六角形の環をつくった「芳香族化合物」の代表です。多くのプラスチック・医薬品・染料の原料となる化学工業の基本物質ですが発がん性があります。',
-'CH3COOH':'酢酸（エタン酸）。お酢の酸っぱさの正体で、食酢には3〜5%含まれています。料理の調味料だけでなく食品保存料・溶媒・プラスチックの原料にも使われます。',
-'PP':   'ポリプロピレン（PP）。プロピレン分子が何万個もつながってできた合成樹脂です。食品容器・自動車バンパー・マスクなど、世界で最も多く使われるプラスチックの一つです。',
-'PE':   'ポリエチレン（PE）。エチレン分子が何万個もつながってできたプラスチックです。レジ袋・ペットボトル・食品の包装フィルムなど身の回りに最もよく使われます。',
-'PVC':  'ポリ塩化ビニル（PVC・塩ビ）。水道管・電線の被覆・窓枠・床材など、建築に最もよく使われるプラスチックです。',
-'NR':   '天然ゴム。イソプレン分子が何万個もつながった高分子材料です。ゴムの木（パラゴムノキ）の樹液から採れます。タイヤ・輪ゴム・医療用手袋などに使われます。',
-// ── NEW COMPOUND DESCRIPTIONS ──
-'HClO': '次亜塩素酸。塩素と水が反応してできる弱い酸です。強い酸化力・殺菌力があり、水道水の消毒・プールの塩素・衣類漂白剤・カビ取り剤の有効成分です。酸性のものと混ぜると塩素ガスが発生するので危険！',
-'H2SO3':'亜硫酸。SO₂（二酸化硫黄）が雨水に溶けてできる弱い酸。酸性雨の成分の一つです。食品添加物（防腐剤・酸化防止剤）としても使われます。',
-'COCl2':'ホスゲン。第一次世界大戦で化学兵器として使われた猛毒ガスです。現在は農薬・プラスチック・染料など多くの有機化合物の合成原料として工業的に重要です。',
-'CS2':  '二硫化炭素。炭素と硫黄からできた有機溶媒。独特の不快な臭いがあります。レーヨン（ビスコース）繊維の製造・ゴムの加工に使われます。',
-'N2H4': 'ヒドラジン。N-N結合を持つ強力な燃料です。人工衛星やロケットの姿勢制御用燃料として使われます。強い毒性があるため取り扱いには注意が必要です。',
-'HCN':  'シアン化水素（青酸ガス）。猛毒で、アーモンドのような独特の臭いがします。工業的にはアクリル繊維（アクリロニトリルの原料）・金の精錬などで使われる重要な物質です。',
-'NaClO':'次亜塩素酸ナトリウム。「ハイター」などの漂白・除菌剤の主成分です。衣類の漂白・台所の除菌・トイレ掃除などに広く使われています。酸性のものと混ぜると塩素ガスが発生するので危険！',
-'NaNO3':'硝酸ナトリウム（チリ硝石）。農業用肥料・食肉の発色剤（ハムやソーセージの赤み）として使われます。南米チリの砂漠に天然にも産出します。',
-'Na2S': '硫化ナトリウム。製紙工業の「クラフトパルプ法」で木材チップを溶かすのに使われる重要な化学品です。',
-'Fe2O3':'酸化鉄(III)（赤さびの主成分）。鉄が空気中の酸素と水で酸化されてできます。絵の具の赤・茶色顔料（ベンガラ）、研磨剤にも使われます。',
-'Fe3O4':'四酸化三鉄（磁鉄鉱）。天然に産出する磁鉄鉱の主成分で、磁石に強く引きつけられます。人類最古の磁石として方位磁針に使われた歴史があります。',
-'CaO':  '酸化カルシウム（生石灰）。石灰石を約900℃以上で焼くと生石灰になります。水と反応すると消石灰になりながら大量の熱を発生します（化学カイロの原理！）。コンクリート・漆喰に使われます。',
-'CaOH2':'水酸化カルシウム（消石灰・石灰乳）。生石灰に水を加えると発熱しながらできます。強いアルカリ性を示し、土壌改良・グラウンドのライン引き・漆喰の原料として使われます。',
-'CaCO3':'炭酸カルシウム。石灰石・大理石・チョーク・貝殻・卵の殻の主成分です。地球上で最も豊富な岩石成分の一つ。黒板のチョーク・胃薬・歯磨き粉の研磨剤など幅広く使われます。',
-'KCl':  '塩化カリウム（カリ肥料）。植物の成長に不可欠なカリウムを供給する肥料として世界中で使われます。食塩（NaCl）より体への影響が少ないため、減塩食品の代替品にもなっています。',
-'KOH':  '水酸化カリウム。NaOHと同様の強アルカリ。石鹸・洗剤の製造、アルカリ電池・燃料電池の電解液に使われます。',
-'KNO3': '硝酸カリウム（硝石）。木炭・硫黄・硝酸カリウムを混ぜた「黒色火薬」は人類最古の爆薬で、14世紀から花火・鉄砲に使われてきました。現在でも花火の火薬に使われます！',
-'CCl4': '四塩化炭素。かつてドライクリーニング・消火器・フロン製造に大量に使われましたが、オゾン層を破壊することが判明し、現在はモントリオール議定書で規制されています。',
-'CHCl3':'クロロホルム。1840年代から外科手術の全身麻酔薬として使われ始めた歴史ある化合物。現在は有機合成の原料・溶媒として使われます。',
-'CH2Cl2':'ジクロロメタン（塩化メチレン）。沸点が低く（39℃）揮発しやすい溶媒。塗料剥離剤・医薬品製造・コーヒーのカフェイン除去（デカフェ）に使われます。',
-'DME':  'ジメチルエーテル（DME）。メタノールの脱水縮合でできるエーテル。ディーゼルエンジンの代替燃料として注目されています。PM（粒子状物質）を発生しないクリーンな燃料です。',
-'C2H4O':'エチレンオキシド（酸化エチレン）。三角形のひずんだ構造を持つ反応性の高い化合物。医療器具の殺菌・エチレングリコール・洗剤・界面活性剤の原料として世界で最も重要な工業化学品の一つです。',
-'C4H6': '1,3-ブタジエン。2つの炭素二重結合を持つジエン化合物。合成ゴム（SBR）・ABS樹脂（家電製品・自動車内装）の原料です。世界で年間1000万トン以上が生産されます。',
-'C6H5CHO':'ベンズアルデヒド。アーモンド・さくらんぼ・桃に似た甘い香りがする液体。天然にはアーモンドの核・桃の葉に含まれます。食品の香料・香水・染料合成に使われます。',
-'C6H5COOH':'安息香酸（ベンゾエ酸）。弱い酸で、清涼飲料水・ジュース・ジャムの食品保存料（E210）として使われます。天然には安息香やベンゾインという樹脂の中に含まれています。',
-'C8H8': 'スチレン（ビニルベンゼン）。ポリスチレン（プラスチック）・発泡スチロール（断熱材・包装材）の原料です。プラスチック容器の独特の臭いはスチレンによるものです。',
-'C10H8':'ナフタレン。2つのベンゼン環が融合した白い固体で、独特の臭いがあります。タンスに入れる「防虫剤（ナフタリン）」として有名！昇華（固体が直接気体になる）しやすい性質を利用しています。',
-'EtAc': '酢酸エチル（酢酸エステル）。甘くフルーティーな香りがする溶媒。マニキュアの「除光液」・接着剤・塗料の溶媒として日常的に使われています。エステル化反応（酸＋アルコール→エステル＋水）の代表例です。'
+// ─── MOLECULE INFO ─────────────────────────────────────────────
+var MOL_INFO={
+'H':'水素原子1つだけの状態。宇宙で最も多い元素で、太陽や星の主な成分です。','O':'酸素原子1つ。空気の約20%を占め、物が燃えるのに必要です。','C':'炭素原子1つ。生き物の体・プラスチック・ダイヤモンドの基本です。','N':'窒素原子1つ。空気の約78%は窒素分子N₂です。','S':'硫黄原子1つ。火山の噴火口に黄色い粉として見られます。','Cl':'塩素原子1つ。非常に反応しやすく通常Cl₂として存在します。','Na':'ナトリウム原子1つ。水に触れると激しく反応する金属。食塩の材料。','Fe':'鉄原子1つ。橋・ビル・自動車など最もよく使われる金属です。','Ca':'カルシウム原子1つ。骨や歯の主成分。石灰石（CaCO₃）の形で地球に大量存在します。','K':'カリウム原子1つ。カリ肥料の主成分。体内で神経や筋肉の働きを調節します。',
+'H2':'水素ガス。とても軽くて燃えやすく、燃やすと水になります。ロケット燃料にも使われる未来のクリーンエネルギー！','O2':'酸素ガス。私たちが呼吸するのに欠かせません。空気の約20%を占めています。','N2':'窒素ガス。空気の約78%を占める安定した気体。食品の保存にも使われます。','Cl2':'塩素ガス。黄緑色で刺激臭がある有毒な気体。プール・水道水の消毒に使われます。','CO':'一酸化炭素。無色無臭の猛毒ガス。不完全燃焼で発生。室内での火器使用は換気が必須！','NaCl':'食塩。ナトリウムと塩化物イオンが規則正しく並んでできています。料理の味付けと体の機能に欠かせません。','H2O':'水。地球上の生き物すべてに必要な物質。多くの物質を溶かす「万能溶媒」です。','CO2':'二酸化炭素。呼吸や燃焼で発生。植物は光合成でこれを使います。炭酸飲料のシュワシュワの正体でもあります。','HCl':'塩化水素。水に溶かすと塩酸。胃液にも含まれ食べ物を消化します。','NH3':'アンモニア。ツーンとした臭いの気体。農業用肥料の原料として世界中で作られています。','SO2':'二酸化硫黄。火山から出る刺激臭の気体。雨に溶けると酸性雨の原因になります。','NO':'一酸化窒素。雷が落ちるときにも発生。体内では血管を広げる働きをしています。','H2S':'硫化水素。温泉特有の「卵が腐ったような臭い」の正体！高濃度だと非常に危険です。','NaOH':'水酸化ナトリウム（苛性ソーダ）。強いアルカリ性の固体。石鹸・紙の製造に使われます。','CH4':'メタン。天然ガスの主成分でガスコンロの燃料。牛のげっぷにも含まれる温室効果ガスです。','SO3':'三酸化硫黄。硫酸を作るための中間物質。水に触れるとすぐ硫酸になります。','NO2':'二酸化窒素。赤茶色の有毒ガス。光化学スモッグの原因物質の一つです。','O3':'オゾン。地上約20〜30kmの「オゾン層」で紫外線から地球の生き物を守っています。','H2O2':'過酸化水素。「オキシドール」の主成分で傷口の消毒に使われます。漂白剤にも使用。','H2SO4':'硫酸。非常に強い酸。車のバッテリー・肥料・塗料の製造に欠かせません。','HNO3':'硝酸。強い酸。農業用肥料・火薬・染料の製造に使われます。','CH2O':'ホルムアルデヒド。防腐剤「ホルマリン」の主成分。生物標本の保存に使われます。','CH3OH':'メタノール（メチルアルコール）。エタノールに似ていますが飲むと失明・死亡する危険物です。','C2H2':'アセチレン。炭素2つが三重結合でつながっています。ガス溶接の炎は3000℃以上！','C2H4':'エチレン。ポリエチレン（プラスチック袋）の原料。果物を熟させる植物ホルモンでもあります。','C2H6':'エタン。炭素2つが単結合でつながったシンプルな気体。天然ガスに少量含まれます。','C3H6':'プロピレン。ポリプロピレン（食品容器・マスク）の原料です。','C2H5OH':'エタノール（エチルアルコール）。お酒の成分。消毒薬にも使われます。未成年者の飲酒は禁止！','NH4Cl':'塩化アンモニウム。化学肥料・乾電池・咳止め薬などに使われます。','NH4NO3':'硝酸アンモニウム。農業用肥料。ただし高温・衝撃で爆発する危険物です。','H2CO3':'炭酸。CO₂が水に溶んでできる弱い酸。炭酸飲料のシュワシュワはこれです。','Na2CO3':'炭酸ナトリウム（ソーダ灰）。ガラス・紙・石鹸の製造に欠かせません。','NaHCO3':'炭酸水素ナトリウム（重曹）。ベーキングパウダーの成分。加熱するとCO₂が出てケーキが膨らみます。','N2O':'一酸化二窒素（笑気ガス）。吸うと笑い出したくなる感覚。医療では麻酔薬として使用。','Urea':'尿素。農業用肥料として世界中で使用。実は人体でも作られ、おしっこの成分の一つです。','Na2SO4':'硫酸ナトリウム（芒硝）。洗濯洗剤・ガラス製造・医薬品などに使われます。','CH3CHO':'アセトアルデヒド。お酒を飲んだ後に体内でできる物質で、二日酔いの原因の一つです。','HCOOH':'ギ酸（蟻酸）。アリ・ミツバチが毒として持つ物質。皮膚に触れると痛みが起きます。','C3H8':'プロパン（LPガス）。カセットコンロの燃料。圧力をかけると液化してボンベに詰められます。','C4H10':'ブタン。使い捨てライターの燃料。常温で液化しやすい気体です。','CH3Cl':'クロロメタン。オゾン層を破壊するため現在の冷媒には使われていません。','C2H5Cl':'クロロエタン。工業的な化学合成に使われます。','C2H3Cl':'塩化ビニル。PVC（ポリ塩化ビニル）の原料。水道管・床材・窓枠に使われます。','C3H7OH':'1-プロパノール。消毒薬や溶媒として使われるアルコールの一種。','C3H6O':'アセトン。マニキュア「除光液」の主成分。水にも油にも溶ける万能溶媒。','C7H8':'トルエン。塗料・接着剤・印刷インクの溶媒。ガソリンにも含まれます。','C6H5OH':'フェノール。消毒薬・フェノール樹脂（プリント基板・鍋の取っ手）の原料。','C6H12O6':'グルコース（ぶどう糖）。生き物のエネルギー源。脳はグルコースだけをエネルギーとして使います。','C2H6O2':'エチレングリコール（不凍液）。自動車クーラント液の主成分。PETボトルの原料でもあります。','CH3NH2':'メチルアミン。魚や肉が腐敗するときの「生臭さ」の原因物質の一つです。','C5H8':'イソプレン。天然ゴムの基本単位。何万個もつながってタイヤ・輪ゴムになります。','NaAce':'酢酸ナトリウム。「ホッカイロ」の中に入っている物質！過冷却液体が固まって熱を発生させます。','C6H6':'ベンゼン。芳香族化合物の代表。プラスチック・医薬品・染料の原料。発がん性があるため取り扱い注意。','CH3COOH':'酢酸（お酢）。食酢の酸っぱさの正体。食品保存料・工業用溶媒にも使われます。','PP':'ポリプロピレン（PP）。食品容器・マスク・自動車バンパーなど最も多く使われるプラスチックの一つ。','PE':'ポリエチレン（PE）。レジ袋・ペットボトル・食品包装フィルム。最も身近なプラスチック。','PVC':'ポリ塩化ビニル（PVC・塩ビ）。水道管・電線の被覆・窓枠など建築に幅広く使われます。','NR':'天然ゴム。ゴムの木の樹液から採れます。タイヤ・輪ゴム・手袋に使われる高分子材料。',
+'HClO':'次亜塩素酸。強い殺菌力があり水道水・プール・漂白剤・カビ取り剤の有効成分です。酸性のものと混ぜると塩素ガスが発生するので危険！','H2SO3':'亜硫酸。SO₂が雨水に溶けてできる弱い酸で酸性雨の成分の一つ。食品添加物（防腐剤）としても使われます。','COCl2':'ホスゲン。第一次世界大戦で化学兵器として使われた猛毒ガス。現在は農薬・プラスチックの合成原料に使われます。','CS2':'二硫化炭素。炭素と硫黄からできた有機溶媒。レーヨン繊維・ゴム加工に使われます。','N2H4':'ヒドラジン。人工衛星やロケットの姿勢制御用燃料。強い毒性があるため取り扱い注意。','HCN':'シアン化水素（青酸ガス）。猛毒。工業的にはアクリル繊維・金の精錬などで重要な物質です。','NaClO':'次亜塩素酸ナトリウム（ハイターなど）。衣類の漂白・台所除菌・カビ取りに広く使用。酸性のものと混ぜると危険！','NaNO3':'硝酸ナトリウム（チリ硝石）。農業用肥料・食肉の発色剤として使われます。','Na2S':'硫化ナトリウム。製紙工業のクラフトパルプ法で木材チップを溶かすのに使用する重要な化学品。','Fe2O3':'酸化鉄(III)（赤さびの主成分）。鉄が空気と水分で酸化されてできます。絵の具の赤顔料・研磨剤にも使用。','Fe3O4':'四酸化三鉄（磁鉄鉱）。磁石に強く引きつけられる黒い鉄の酸化物。人類最古の磁石はこれでした！','CaO':'酸化カルシウム（生石灰）。石灰石を高温で焼くとできます。水と反応して大量の熱を出します（化学カイロの原理！）。','CaOH2':'水酸化カルシウム（消石灰）。強いアルカリ性。土壌改良・グラウンドのライン引き・漆喰の原料。','CaCO3':'炭酸カルシウム。石灰石・大理石・チョーク・貝殻・卵の殻の主成分。地球で最も豊富な岩石成分の一つ！','KCl':'塩化カリウム（カリ肥料）。植物に必要なカリウムを供給する肥料。食塩より体に優しい減塩食品の代替品にも。','KOH':'水酸化カリウム。石鹸・洗剤の製造、アルカリ電池・燃料電池の電解液に使われる強アルカリ。','KNO3':'硝酸カリウム（硝石）。木炭＋硫黄＋硝酸カリウムの黒色火薬は人類最古の爆薬！現在でも花火に使われます。','CCl4':'四塩化炭素。かつてドライクリーニングに使われましたが、オゾン層を破壊するためモントリオール議定書で規制されました。','CHCl3':'クロロホルム。1840年代から外科手術の全身麻酔薬として使われた歴史ある化合物。現在は有機合成の原料。','CH2Cl2':'ジクロロメタン。塗料剥離剤・医薬品製造・コーヒーのカフェイン除去（デカフェ）に使われる溶媒。','DME':'ジメチルエーテル（DME）。メタノールの脱水縮合でできるエーテル。PM（粒子状物質）を出さないクリーンなディーゼル代替燃料として注目。','C2H4O':'エチレンオキシド。三角形のひずんだ構造を持つ反応性の高い化合物。医療器具の殺菌・洗剤・界面活性剤の原料。','C4H6':'1,3-ブタジエン。合成ゴム（SBR・タイヤの主原料）・ABS樹脂の原料。世界で年間1000万トン以上生産されます。','C6H5CHO':'ベンズアルデヒド。アーモンド・さくらんぼ・桃に似た甘い香り。天然にもアーモンドの核に含まれます。香料に使用。','C6H5COOH':'安息香酸（ベンゾエ酸）。清涼飲料水・ジュース・ジャムの食品保存料（E210）として使われます。','C8H8':'スチレン（ビニルベンゼン）。ポリスチレン・発泡スチロール（断熱材・包装材）の原料。プラスチック容器の独特の臭いはこれ。','C10H8':'ナフタレン。2つのベンゼン環が融合した白い固体。タンスの「防虫剤（ナフタリン）」として有名！昇華（固体→気体）しやすい性質を利用。','EtAc':'酢酸エチル（酢酸エステル）。甘くフルーティーな香りの溶媒。マニキュア除光液・接着剤・塗料の溶剤として日常的に使用。エステル化反応の代表例！'
 };
-
-// ─── MOL INFO DISPLAY ─────────────────────────────────────────
 function showMolInfo(key){
   var el=document.getElementById('molinfo');
   var m=MOLS[key]; if(!m) return;
-  var info=MOL_INFO[key]||m.ja;
   document.getElementById('mi-sym').textContent=m.sym;
   document.getElementById('mi-name').textContent=m.ja;
-  document.getElementById('mi-desc').textContent=info;
-  el.classList.remove('show');
-  void el.offsetWidth;
-  el.classList.add('show');
+  document.getElementById('mi-desc').textContent=MOL_INFO[key]||m.ja;
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
 }
-
-// ─── SAVE / LOAD STATE (localStorage) ───────────────────────────
+// ─── SAVE / LOAD ───────────────────────────────────────────────
 function saveState(){
   try{
-    localStorage.setItem(SAVE_KEY,JSON.stringify({
-      score:score,
-      unlocked:Object.keys(unlockedMols),
-      done:Object.keys(doneRxns)
-    }));
+    localStorage.setItem(SAVE_KEY,JSON.stringify({score:score,unlocked:Object.keys(unlockedMols),done:Object.keys(doneRxns)}));
     var si=document.getElementById('saveind');
-    if(si){ si.classList.remove('hide'); si.textContent='💾 自動保存済み'; clearTimeout(si._t); si._t=setTimeout(function(){si.classList.add('hide');},2500); }
+    if(si){si.classList.remove('hide');si.textContent='💾 自動保存済み';clearTimeout(si._t);si._t=setTimeout(function(){si.classList.add('hide');},2500);}
   }catch(e){}
 }
 function loadState(){
   try{
-    var s=localStorage.getItem(SAVE_KEY);
-    if(!s) return false;
+    var s=localStorage.getItem(SAVE_KEY); if(!s) return false;
     var d=JSON.parse(s);
     if(typeof d.score==='number') score=d.score;
-    if(Array.isArray(d.unlocked)) d.unlocked.forEach(function(k){ if(MOLS[k]) unlockedMols[k]=true; });
-    if(Array.isArray(d.done)) d.done.forEach(function(k){ doneRxns[k]=true; });
-    return d.unlocked && d.unlocked.length>Object.keys(unlockedMols).length-1;
-  }catch(e){ return false; }
+    if(Array.isArray(d.unlocked)) d.unlocked.forEach(function(k){if(MOLS[k]) unlockedMols[k]=true;});
+    if(Array.isArray(d.done)) d.done.forEach(function(k){doneRxns[k]=true;});
+    return true;
+  }catch(e){return false;}
 }
 function resetState(){
   if(!confirm('進捗をリセットしますか？スコアと発見した反応が全て消えます。')) return;
-  try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
   location.reload();
 }
-
-
-// ─── MOBILE DRAWER ────────────────────────────────────────────
-var _drawerOpen=false, _drawerSec='mol';
-
+// ─── MOBILE DRAWER ─────────────────────────────────────────────
+var _dOpen=false,_dSec='mol';
 function openDrawer(sec){
   if(window.innerWidth>700) return;
-  _drawerSec=sec||_drawerSec;
-  _drawerOpen=true;
+  _dSec=sec||_dSec; _dOpen=true;
   document.getElementById('left').classList.add('open');
-  var tog=document.getElementById('drawtoggle');
-  if(tog) tog.classList.add('open');
-  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===_drawerSec); });
-  showDrawerSec(_drawerSec);
+  document.querySelectorAll('.dtbtn').forEach(function(b){b.classList.toggle('active',b.dataset.sec===_dSec);});
+  showDrawerSec(_dSec);
 }
 function closeDrawer(){
   if(window.innerWidth>700) return;
-  _drawerOpen=false;
+  _dOpen=false;
   document.getElementById('left').classList.remove('open');
-  var tog=document.getElementById('drawtoggle');
-  if(tog) tog.classList.remove('open');
-  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.dtbtn').forEach(function(b){b.classList.remove('active');});
 }
 function toggleDrawer(sec){
   if(window.innerWidth>700) return;
-  if(_drawerOpen && _drawerSec===sec){ closeDrawer(); } else { openDrawer(sec); }
+  if(_dOpen&&_dSec===sec){closeDrawer();}else{openDrawer(sec);}
 }
 function showDrawerSec(sec){
-  _drawerSec=sec;
-  var map={'mol':['sec-mol'],'rxn':['sec-rxn'],'log':['sec-hint','sec-leg','sec-log']};
-  ['sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.style.display='none';
-  });
-  (map[sec]||[]).forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=''; });
-  document.querySelectorAll('.stab').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===sec); });
-  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===sec); });
+  if(window.innerWidth>700) return;
+  _dSec=sec;
+  var map={mol:['sec-mol'],rxn:['sec-rxn'],log:['sec-hint','sec-leg','sec-log']};
+  ['sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  (map[sec]||[]).forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='';});
+  document.querySelectorAll('.stab').forEach(function(b){b.classList.toggle('active',b.dataset.sec===sec);});
+  document.querySelectorAll('.dtbtn').forEach(function(b){b.classList.toggle('active',b.dataset.sec===sec);});
 }
 function initMobile(){
   if(window.innerWidth>700) return;
-  // ドロワーのセクション内タブを動的生成
-  var lft=document.getElementById('left');
-  if(!document.getElementById('sec-tabs')){
-    var td=document.createElement('div'); td.id='sec-tabs';
-    td.innerHTML='<button class="stab active" data-sec="mol" onclick="showDrawerSec('mol')">🔬 物質</button>'+
-      '<button class="stab" data-sec="rxn" onclick="showDrawerSec('rxn')">⚗️ 反応</button>'+
-      '<button class="stab" data-sec="log" onclick="showDrawerSec('log')">📖 記録</button>';
-    lft.insertBefore(td,lft.firstChild);
-  }
-  // トグルボタンを#mainに動的追加
-  if(!document.getElementById('drawtoggle')){
-    var tog=document.createElement('div'); tog.id='drawtoggle';
-    tog.innerHTML=
-      '<div class="dtbtn" data-sec="mol" onclick="toggleDrawer('mol')">🔬</div>'+
-      '<div class="dtbtn" data-sec="rxn" onclick="toggleDrawer('rxn')">⚗️</div>'+
-      '<div class="dtbtn" data-sec="log" onclick="toggleDrawer('log')">📖</div>';
-    document.getElementById('main').appendChild(tog);
-  }
+  var cv=document.getElementById('threecanvas');
+  if(cv) cv.addEventListener('click',function(){if(_dOpen)closeDrawer();},false);
   closeDrawer();
   showDrawerSec('mol');
-  // 3Dビューをタップしたらドロワーを閉じる
-  var cv=document.getElementById('threecanvas');
-  if(cv) cv.addEventListener('click',function(){ if(_drawerOpen) closeDrawer(); });
 }
 window.addEventListener('resize',function(){
   if(window.innerWidth>700){
-    ['left','right','sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
-      var el=document.getElementById(id); if(el) el.style.display='';
+    var lft=document.getElementById('left');
+    if(lft){lft.classList.remove('open');lft.style.cssText='';}
+    ['sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
+      var el=document.getElementById(id);if(el)el.style.cssText='';
     });
-    var tog=document.getElementById('drawtoggle'); if(tog) tog.style.display='none';
-  } else { initMobile(); }
-});
-  } else { setTab(_activeTab); }
+  }else{
+    initMobile();
+  }
 });
 
 </script>
