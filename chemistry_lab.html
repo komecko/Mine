@@ -15,30 +15,70 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .pb{height:100%;background:linear-gradient(90deg,#30b060,#60e090);border-radius:4px;transition:width .5s}
 #main{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 52px)}
 @media(max-width:700px){
-  body{overflow-x:hidden}
-  #hdr{padding:8px 12px;gap:8px}
-  .app-title{font-size:1.05em}
-  .stats{gap:8px;font-size:.8em}
-  .pbwrap{width:70px}
-  #main{display:block;height:auto;padding-bottom:58px}
-  #left{border-right:none;border-bottom:none;padding:10px;gap:8px;overflow-y:visible}
-  #right{flex-direction:column}
-  #vwrap{min-height:38vh;height:38vh}
-  #info{max-height:22vh;overflow-y:auto}
-  #molinfo{max-width:55vw;top:8px;right:8px;padding:8px 10px}
-  .mi-sym{font-size:1.05em}.mi-name{font-size:.68em}.mi-desc{font-size:.68em}
-  .mgrid{grid-template-columns:repeat(4,1fr);gap:6px}
-  .mcard{padding:8px 3px 6px}
-  .msym{font-size:1em}.mnm{font-size:.58em}
-  .slot{min-height:68px}
-  .ssym{font-size:1.05em}
-  .cbtn{padding:9px 3px 7px}
-  .cico{font-size:1.2em}.clbl{font-size:.62em}
-  .rbtn{padding:13px;font-size:1.05em;letter-spacing:.5px}
-  #tabnav{display:flex}
+  body{overflow:hidden}
+  #hdr{padding:7px 12px;gap:6px}
+  .app-title{font-size:1em}
+  .stats{gap:6px;font-size:.75em}
+  .pbwrap{width:60px}
+  #main{display:block;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
+  /* 3Dビューが常時フルスクリーン */
+  #right{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
+  #vwrap{flex:1;min-height:0}
+  #info{display:none}
+  /* 左ドロワー：デフォルトは画面外 */
+  #left{
+    position:absolute;top:0;left:-54%;bottom:0;width:54%;
+    background:rgba(8,16,32,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-right:1px solid #1a3060;z-index:60;
+    overflow-y:auto;overflow-x:hidden;
+    transition:left .22s cubic-bezier(.4,0,.2,1);
+    padding:6px 7px 70px;display:flex;flex-direction:column;gap:7px
+  }
+  #left.open{left:0}
+  /* セクション内タブ */
+  #sec-tabs{display:flex;gap:3px;flex-shrink:0}
+  .stab{flex:1;padding:7px 2px;background:#0d1d38;border:1px solid #1e3358;border-radius:6px;
+    color:#506080;font-size:.62em;cursor:pointer;text-align:center;line-height:1.3;
+    -webkit-tap-highlight-color:transparent}
+  .stab.active{background:#102a18;border-color:#30c060;color:#60d090}
+  /* トグルボタン群（左端に縦並び） */
+  #drawtoggle{position:absolute;top:50%;left:0;transform:translateY(-50%);
+    z-index:61;display:flex;flex-direction:column;gap:4px;
+    transition:left .22s cubic-bezier(.4,0,.2,1)}
+  #drawtoggle.open{left:54%}
+  .dtbtn{background:rgba(10,22,44,.9);border:1px solid #1a3060;border-left:none;
+    border-radius:0 8px 8px 0;color:#4a6888;padding:10px 6px;cursor:pointer;
+    font-size:1.2em;display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
+  .dtbtn.active{background:rgba(20,50,90,.97);color:#50c8ff;border-color:#2a5090}
+  /* 物質カード：小さく */
+  .mgrid{grid-template-columns:repeat(5,1fr);gap:3px}
+  .mcard{padding:4px 2px 3px;border-radius:5px}
+  .msym{font-size:.7em;line-height:1}
+  .mnm{font-size:.44em;margin-top:1px}
+  /* スロット */
+  .slot{min-height:58px}
+  .ssym{font-size:.9em}
+  .snm{font-size:.5em}
+  .srow{gap:3px}
+  .plus{font-size:.85em}
+  /* 条件ボタン */
+  .crow{grid-template-columns:repeat(5,1fr);gap:3px}
+  .cbtn{padding:8px 2px 6px}
+  .cico{font-size:1.1em}.clbl{font-size:.56em}
+  .rbtn{padding:12px;font-size:.98em}
+  .pcard{padding:5px 7px}
+  .hint{font-size:.67em}
+  .dlog{max-height:200px}
+  .ditem{font-size:.64em}
+  #molinfo{max-width:58vw;top:8px;right:8px;padding:8px 10px}
+  .mi-sym{font-size:.95em}.mi-name{font-size:.64em}.mi-desc{font-size:.63em}
+  #saveind{bottom:8px;right:10px;font-size:.7em}
+  #tabnav{display:none!important}
 }
-@media(min-width:701px){
-  #tabnav{display:none}
+  #drawtoggle{display:none!important}
+  #sec-tabs{display:none!important}
+}
 }
 /* タブバー共通 */
 #tabnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:#0b162a;border-top:1px solid #1a2e50;z-index:100;gap:0}
@@ -744,7 +784,7 @@ function clickMol(key,card){
   if(idx!==-1) slots[idx]=key; else slots[1]=key;
   refreshSlots(); buildScene(slots.filter(function(s){return s;}));
   card.classList.add('flash'); setTimeout(function(){card.classList.remove('flash');},300);
-  if(window.innerWidth<=700){ setTab('rxn'); }
+  if(window.innerWidth<=700){ openDrawer('rxn'); }
 }
 function selProd(key){
   var idx=slots.indexOf(null);
@@ -840,6 +880,7 @@ function doReaction(){
     buildScene(prods);
     if(prods.length>0) showMolInfo(prods[0]);
     saveState();
+    if(window.innerWidth<=700) closeDrawer();
     slots=[null,null]; refreshSlots();
     var noteHtml=rxn.note?('<div class="snote"><b>⚖️ 反応の量比</b><br>'+rxn.note+'</div>'):'';
     document.getElementById('info').innerHTML=
@@ -1041,48 +1082,75 @@ function resetState(){
 }
 
 
-// ─── MOBILE TABS ──────────────────────────────────────────────
-var _activeTab='mol';
-function setTab(name){
+// ─── MOBILE DRAWER ────────────────────────────────────────────
+var _drawerOpen=false, _drawerSec='mol';
+
+function openDrawer(sec){
   if(window.innerWidth>700) return;
-  _activeTab=name;
-  ['mol','rxn','log'].forEach(function(t){
-    var tb=document.getElementById('tb-'+t);
-    if(tb) tb.classList.toggle('active',t===name);
+  _drawerSec=sec||_drawerSec;
+  _drawerOpen=true;
+  document.getElementById('left').classList.add('open');
+  var tog=document.getElementById('drawtoggle');
+  if(tog) tog.classList.add('open');
+  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===_drawerSec); });
+  showDrawerSec(_drawerSec);
+}
+function closeDrawer(){
+  if(window.innerWidth>700) return;
+  _drawerOpen=false;
+  document.getElementById('left').classList.remove('open');
+  var tog=document.getElementById('drawtoggle');
+  if(tog) tog.classList.remove('open');
+  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.remove('active'); });
+}
+function toggleDrawer(sec){
+  if(window.innerWidth>700) return;
+  if(_drawerOpen && _drawerSec===sec){ closeDrawer(); } else { openDrawer(sec); }
+}
+function showDrawerSec(sec){
+  _drawerSec=sec;
+  var map={'mol':['sec-mol'],'rxn':['sec-rxn'],'log':['sec-hint','sec-leg','sec-log']};
+  ['sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
   });
-  var smol=document.getElementById('sec-mol');
-  var srxn=document.getElementById('sec-rxn');
-  var shnt=document.getElementById('sec-hint');
-  var sleg=document.getElementById('sec-leg');
-  var slog=document.getElementById('sec-log');
-  var rgt =document.getElementById('right');
-  var lft =document.getElementById('left');
-  if(name==='mol'){
-    smol.style.display=''; lft.style.display='';
-    srxn.style.display='none'; shnt.style.display='none';
-    sleg.style.display='none'; slog.style.display='none';
-    rgt.style.display='none';
-  } else if(name==='rxn'){
-    smol.style.display='none'; lft.style.display='';
-    srxn.style.display=''; shnt.style.display='none';
-    sleg.style.display='none'; slog.style.display='none';
-    rgt.style.display='';
-    setTimeout(resThree,50);
-  } else {
-    smol.style.display='none'; srxn.style.display='none';
-    shnt.style.display=''; sleg.style.display=''; slog.style.display='';
-    lft.style.display=''; rgt.style.display='none';
-  }
+  (map[sec]||[]).forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=''; });
+  document.querySelectorAll('.stab').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===sec); });
+  document.querySelectorAll('.dtbtn').forEach(function(b){ b.classList.toggle('active',b.dataset.sec===sec); });
 }
 function initMobile(){
   if(window.innerWidth>700) return;
-  setTab('mol');
+  // ドロワーのセクション内タブを動的生成
+  var lft=document.getElementById('left');
+  if(!document.getElementById('sec-tabs')){
+    var td=document.createElement('div'); td.id='sec-tabs';
+    td.innerHTML='<button class="stab active" data-sec="mol" onclick="showDrawerSec('mol')">🔬 物質</button>'+
+      '<button class="stab" data-sec="rxn" onclick="showDrawerSec('rxn')">⚗️ 反応</button>'+
+      '<button class="stab" data-sec="log" onclick="showDrawerSec('log')">📖 記録</button>';
+    lft.insertBefore(td,lft.firstChild);
+  }
+  // トグルボタンを#mainに動的追加
+  if(!document.getElementById('drawtoggle')){
+    var tog=document.createElement('div'); tog.id='drawtoggle';
+    tog.innerHTML=
+      '<div class="dtbtn" data-sec="mol" onclick="toggleDrawer('mol')">🔬</div>'+
+      '<div class="dtbtn" data-sec="rxn" onclick="toggleDrawer('rxn')">⚗️</div>'+
+      '<div class="dtbtn" data-sec="log" onclick="toggleDrawer('log')">📖</div>';
+    document.getElementById('main').appendChild(tog);
+  }
+  closeDrawer();
+  showDrawerSec('mol');
+  // 3Dビューをタップしたらドロワーを閉じる
+  var cv=document.getElementById('threecanvas');
+  if(cv) cv.addEventListener('click',function(){ if(_drawerOpen) closeDrawer(); });
 }
 window.addEventListener('resize',function(){
   if(window.innerWidth>700){
     ['left','right','sec-mol','sec-rxn','sec-hint','sec-leg','sec-log'].forEach(function(id){
       var el=document.getElementById(id); if(el) el.style.display='';
     });
+    var tog=document.getElementById('drawtoggle'); if(tog) tog.style.display='none';
+  } else { initMobile(); }
+});
   } else { setTab(_activeTab); }
 });
 
