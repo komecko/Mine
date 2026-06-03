@@ -26,7 +26,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .sclear:hover{color:#dde8ff;background:#1e3060}
 .sbadge{font-size:.68em;color:#7090b0;display:none;margin-bottom:4px}
 /* Grid */
-.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;min-height:20px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;min-height:20px}
 .mempty{font-size:.75em;color:#304060;text-align:center;padding:10px;grid-column:1/-1}
 .mcard{background:#101d35;border:1px solid #1e3358;border-radius:7px;padding:6px 3px 5px;text-align:center;cursor:grab;transition:all .15s;user-select:none}
 .mcard:hover{background:#182a4a;border-color:#3060b0;transform:scale(1.05)}
@@ -141,10 +141,8 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .ditem{font-size:.7em;color:#607090;padding:4px 0;border-bottom:1px solid #101e38;line-height:1.3;cursor:pointer;transition:color .15s}
 .ditem:first-child{color:#60d0a0}
 .ditem:hover{color:#90d0ff}
-/* ── mobile drawer toggle ── */
-#drawtoggle{display:none;position:fixed;top:58px;left:0;z-index:210}
-#drawtoggle .dtbtn{background:rgba(10,22,44,.88);border:1px solid #1a3060;border-left:none;border-radius:0 9px 9px 0;color:#4a6888;padding:10px 9px;cursor:pointer;font-size:1.25em;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;display:block}
-#drawtoggle .dtbtn.active{background:rgba(20,50,90,.97);color:#50c8ff;border-color:#2a5090}
+/* ── drawer toggle (desktop: hidden) ── */
+#drawtoggle{display:none}
 /* ── mobile sec-tabs ── */
 #sec-tabs{display:none;gap:4px;flex-shrink:0;margin-bottom:4px}
 .stab{flex:1;padding:7px 4px;background:#0d1d38;border:1px solid #1e3358;border-radius:7px;color:#506080;font-size:.65em;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
@@ -156,40 +154,46 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   .app-title{font-size:1em}
   .stats{gap:6px;font-size:.75em}
   .pbwrap{width:60px}
-  /* #main: fixed, 3D fills all, reaction bar at bottom */
-  #main{display:block;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
-  /* 3D view */
-  #right{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column}
-  #vwrap{flex:1;min-height:0}
+  /* メインを縦フレックスに：上=ドロワー、下=3D+反応バー */
+  #main{display:flex;flex-direction:column;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
+  /* ドロワー：閉=0px、開=44vh */
+  #left{flex-shrink:0;height:0;overflow:hidden;background:rgba(8,16,34,.96);
+    transition:height .25s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;gap:6px}
+  #left.open{height:44vh;overflow-y:auto;border-bottom:1px solid #1a3060;padding:8px}
+  /* 3D + 反応バー */
+  #right{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
+  #vwrap{flex:1;min-height:0;position:relative}
   #info{display:none}
-  /* reaction bar always visible at bottom */
-  #sec-rxn{position:absolute;bottom:0;left:0;right:0;z-index:110;background:rgba(8,16,32,.9);border-top:1px solid #1a3060;padding:7px 10px 8px;display:block!important}
-  /* left drawer: semi-transparent, slides from left */
-  #left{position:absolute;top:0;left:-62%;bottom:0;width:62%;background:rgba(8,16,34,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-right:1px solid #1a3060;z-index:150;overflow-y:auto;transition:left .22s cubic-bezier(.4,0,.2,1);padding:6px 8px 200px;display:flex;flex-direction:column;gap:6px}
-  #left.open{left:0}
-  /* show drawer toggle & tabs on mobile */
-  #drawtoggle{display:block}
-  #sec-tabs{display:flex}
-  /* smaller cards: 4-column */
-  .mgrid{grid-template-columns:repeat(4,1fr);gap:4px}
-  .mcard{padding:4px 5px}
-  .mcard-line{font-size:.68em}
-  /* reaction zone compact */
+  /* 反応バーは#rightの末尾 */
+  #sec-rxn{flex-shrink:0;background:rgba(8,16,32,.92);border-top:1px solid #1a3060;padding:7px 10px 8px;display:block!important}
+  /* ドロワートグル：#vwrap内 左上 */
+  #drawtoggle{position:absolute;top:6px;left:6px;z-index:20;background:rgba(10,22,44,.88);
+    border:1px solid #1a3060;border-radius:8px;padding:6px 10px;color:#5a7898;
+    font-size:1.2em;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center}
+  #drawtoggle.active{color:#50c8ff;border-color:#2a5090;background:rgba(20,50,90,.97)}
+  /* 構造式ボタン：右上 */
+  #viewtoggle{top:6px!important;left:auto!important;right:6px!important;font-size:.65em;padding:5px 8px}
+  /* molinfoは重なりを避ける */
+  #molinfo{top:48px!important;right:6px!important;max-width:58vw}
+  /* ドロワー内：凡例非表示、タブ非表示 */
+  #sec-leg{display:none!important}
+  #sec-tabs{display:none!important}
+  /* 物質グリッド：1列、スクロール可能 */
+  .mgrid{grid-template-columns:1fr;gap:4px}
+  #sec-mol{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  /* 反応ゾーン compact */
   .srow{gap:2px}
   .slot{min-height:52px}
-  .ssym{font-size:.85em}
-  .snm{font-size:.48em}
+  .ssym{font-size:.85em}.snm{font-size:.48em}
   .srem{width:16px;height:16px;font-size:.65em}
   .crow{grid-template-columns:repeat(5,1fr);gap:3px}
   .cbtn{padding:7px 2px 5px}
   .cico{font-size:1em}.clbl{font-size:.55em}
   .rbtn{padding:10px;font-size:.9em}
   .rzone{padding:7px}
-  #molinfo{max-width:60vw;top:8px;right:8px;padding:8px 10px}
-  .mi-sym{font-size:.9em}.mi-name{font-size:.62em}.mi-desc{font-size:.62em}.mi-rxn{font-size:.6em}
+  .dlog{max-height:140px}
   #saveind{bottom:8px;right:10px;font-size:.7em}
-  #viewtoggle{font-size:.65em;padding:4px 7px}
-  .dlog{max-height:160px}
 }
 </style>
 </head>
@@ -249,6 +253,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
     <div id="atomlbls"></div>
     <div id="mollbl">物質を選んで反応させてみよう！</div>
     <div id="rxfx">🔥</div>
+    <div id="drawtoggle" onclick="toggleDrawer()">☰</div>
     <div id="molinfo"><div class="mi-sym" id="mi-sym"></div><div class="mi-name" id="mi-name"></div><div class="mi-desc" id="mi-desc"></div><div class="mi-rxn" id="mi-rxn"></div></div>
     <svg id="struct2d" xmlns="http://www.w3.org/2000/svg"></svg>
     <button id="viewtoggle" onclick="toggleView()">📐 構造式</button>
@@ -260,7 +265,6 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 
 <div id="saveind"></div>
 <div id="toast"></div>
-<div id="drawtoggle"><button class="dtbtn" onclick="toggleDrawer()" title="物質一覧を開く">☰</button></div>
 <div id="ghost"><div class="gs" id="gs"></div><div class="gn" id="gn"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -577,6 +581,8 @@ function makeDrag(el, key) {
   });
   el.addEventListener('dragend', function(){ dragKey=null; el.classList.remove('dragging'); hideDrop3d(); });
   el.addEventListener('touchstart', function(e){
+    // モバイルのスクロールリスト内はD&D無効（スクロール優先）
+    if(window.innerWidth<=700 && el.closest && el.closest('#sec-mol')) return;
     tdKey=key; tdEl=el; el.classList.add('dragging');
     var m=MOLS[key];
     gsEl.textContent=m.sym; gnEl.textContent=m.ja;
@@ -1043,60 +1049,68 @@ function toggleView(){
 function drawStruct2d(keys){
   var svg=document.getElementById('struct2d');
   if(!svg||_view!=='2d') return;
-  var W=svg.clientWidth||400, H=svg.clientHeight||300;
+  var W=svg.clientWidth||400,H=svg.clientHeight||300;
   var valid=(keys||[]).filter(function(k){return k&&MOLS[k];});
-  if(!valid.length){svg.innerHTML='';return;}
-  var n=valid.length, content='';
-  var molW=W/n;
+  if(!valid.length){svg.innerHTML='<rect width="100%" height="100%" fill="#f5f8ff"/>';return;}
+  var n=valid.length,molW=W/n;
+  var ACOL={H:'#222',C:'#111',O:'#b52000',N:'#1040bb',S:'#aa8800',Cl:'#006600',Na:'#7733bb',Fe:'#c05000',Ca:'#557755',K:'#663399'};
+  var bg='<rect width="'+W+'" height="'+H+'" fill="#f5f8ff"/>';
+  var bonds='',aback='',alabel='';
+  function fmt(n){return Math.round(n*10)/10;}
   for(var mi=0;mi<n;mi++){
     var mol=MOLS[valid[mi]];
-    var ox=mi*molW;
+    var baseX=mi*molW;
     if(mol.atoms.length===1){
-      var ed=ELEM[mol.atoms[0].e]||{hex:'#808080'};
-      var cxx=ox+molW/2,cyy=H/2;
-      content+='<circle cx="'+cxx+'" cy="'+cyy+'" r="20" fill="'+ed.hex+'" opacity="0.85"/>';
-      content+='<text x="'+cxx+'" y="'+(cyy+5)+'" text-anchor="middle" font-size="14" fill="'+(ed.hex==='#ffffff'?'#000':'#fff')+'" font-weight="bold">'+mol.atoms[0].e+'</text>';
-      content+='<text x="'+cxx+'" y="'+(cyy+35)+'" text-anchor="middle" font-size="10" fill="#70a0d0">'+mol.ja.slice(0,8)+'</text>';
-      if(mi<n-1) content+='<text x="'+(ox+molW+molW/2)+'" y="'+(H/2+8)+'" text-anchor="middle" font-size="22" fill="#3a5888">+</text>';
+      var e0=mol.atoms[0].e,cx=baseX+molW/2,cy=H/2;
+      var col0=ACOL[e0]||'#111',fw0=e0.length<=1?26:18;
+      aback+='<rect x="'+(cx-fw0*0.65*e0.length/2-3)+'" y="'+(cy-fw0*0.55)+'" width="'+(fw0*0.65*e0.length+6)+'" height="'+(fw0*1.1)+'" fill="#f5f8ff"/>';
+      alabel+='<text x="'+cx+'" y="'+(cy+fw0*0.38)+'" text-anchor="middle" font-size="'+fw0+'" font-weight="bold" font-family="Arial,Helvetica,sans-serif" fill="'+col0+'">'+e0+'</text>';
+      alabel+='<text x="'+cx+'" y="'+(cy+fw0*0.95)+'" text-anchor="middle" font-size="10" fill="#556" font-family="Arial,sans-serif">'+mol.ja.slice(0,10)+'</text>';
+      if(mi<n-1) bonds+='<text x="'+(baseX+molW+molW/2)+'" y="'+(H/2+7)+'" text-anchor="middle" font-size="20" fill="#448">+</text>';
       continue;
     }
-    var xs=mol.atoms.map(function(a){return a.p[0];});
-    var ys=mol.atoms.map(function(a){return a.p[1];});
+    var atoms=mol.atoms;
+    var xs=atoms.map(function(a){return a.p[0];});
+    var ys=atoms.map(function(a){return a.p[1];});
     var xmn=Math.min.apply(null,xs),xmx=Math.max.apply(null,xs);
     var ymn=Math.min.apply(null,ys),ymx=Math.max.apply(null,ys);
-    var pad=32;
-    var sx2=xmx>xmn?(molW-2*pad)/(xmx-xmn):1;
-    var sy2=ymx>ymn?(H-2*pad)/(ymx-ymn):1;
-    var sc=Math.min(sx2,sy2,55);
-    var cxBase=ox+molW/2-(xmn+xmx)/2*sc;
-    var cyBase=H/2+(ymn+ymx)/2*sc;
-    var pax=function(x){return cxBase+x*sc;};
-    var pay=function(y){return cyBase-y*sc;};
-    // bonds
+    var pad=36;
+    var sxr=xmx>xmn?(molW-2*pad)/(xmx-xmn):50;
+    var syr=ymx>ymn?(H-2*pad)/(ymx-ymn):50;
+    var sc=Math.min(sxr,syr,58);
+    var cbx=baseX+molW/2-(xmn+xmx)/2*sc;
+    var cby=H/2+(ymn+ymx)/2*sc;
+    var px=function(x){return cbx+x*sc;};
+    var py=function(y){return cby-y*sc;};
+    // ── bonds ──
     for(var bi=0;bi<mol.bonds.length;bi++){
-      var b=mol.bonds[bi],a0=mol.atoms[b[0]],a1=mol.atoms[b[1]];
-      var x0=pax(a0.p[0]),y0=pay(a0.p[1]),x1=pax(a1.p[0]),y1=pay(a1.p[1]);
-      var ord=b[2],dx2=x1-x0,dy2=y1-y0,ln=Math.sqrt(dx2*dx2+dy2*dy2)||1;
-      var nx2=-dy2/ln,ny2=dx2/ln;
-      var offs=ord===1?[0]:ord===2?[-2.5,2.5]:[-3.5,0,3.5];
-      for(var oi=0;oi<offs.length;oi++){
-        var oo=offs[oi];
-        content+='<line x1="'+(x0+nx2*oo)+'" y1="'+(y0+ny2*oo)+'" x2="'+(x1+nx2*oo)+'" y2="'+(y1+ny2*oo)+'" stroke="#5070a0" stroke-width="'+(ord===1?2.5:2)+'"/>';
+      var b=mol.bonds[bi];
+      var a0=atoms[b[0]],a1=atoms[b[1]];
+      var bx0=px(a0.p[0]),by0=py(a0.p[1]),bx1=px(a1.p[0]),by1=py(a1.p[1]);
+      var ord=b[2];
+      var ddx=bx1-bx0,ddy=by1-by0,blen=Math.sqrt(ddx*ddx+ddy*ddy)||1;
+      var npx=-ddy/blen,npy=ddx/blen;
+      var offsets=ord===1?[0]:ord===2?[-2.2,2.2]:[-3.8,0,3.8];
+      for(var oi=0;oi<offsets.length;oi++){
+        var oo=offsets[oi];
+        bonds+='<line x1="'+fmt(bx0+npx*oo)+'" y1="'+fmt(by0+npy*oo)+'" x2="'+fmt(bx1+npx*oo)+'" y2="'+fmt(by1+npy*oo)+'" stroke="#223" stroke-width="1.7" stroke-linecap="round"/>';
       }
     }
-    // atoms
-    for(var ai=0;ai<mol.atoms.length;ai++){
-      var a=mol.atoms[ai];
-      var ax2=pax(a.p[0]),ay2=pay(a.p[1]);
-      var ed2=ELEM[a.e]||{hex:'#808080'};
-      var isH=a.e==='H',isC=a.e==='C';
-      var r2=isH?8:12;
-      content+='<circle cx="'+ax2+'" cy="'+ay2+'" r="'+r2+'" fill="'+ed2.hex+'" opacity="0.88"/>';
-      content+='<text x="'+ax2+'" y="'+(ay2+4)+'" text-anchor="middle" font-size="'+(isH?8:11)+'" fill="'+(ed2.hex==='#ffffff'?'#000':'#fff')+'" font-weight="bold">'+a.e+'</text>';
+    // ── atom labels ──
+    for(var ai=0;ai<atoms.length;ai++){
+      var at=atoms[ai];
+      var ax=px(at.p[0]),ay=py(at.p[1]);
+      var el=at.e,col=ACOL[el]||'#111';
+      var fs=el.length<=1?13:11;
+      var bw=el.length===1?fs*1.35:el.length*fs*0.72+4;
+      var bh=fs*1.55;
+      // 白い背景で結合線を「消す」
+      aback+='<rect x="'+fmt(ax-bw/2)+'" y="'+fmt(ay-bh*0.55)+'" width="'+fmt(bw)+'" height="'+fmt(bh)+'" fill="#f5f8ff" rx="1"/>';
+      alabel+='<text x="'+fmt(ax)+'" y="'+fmt(ay+fs*0.4)+'" text-anchor="middle" font-size="'+fs+'" font-weight="bold" font-family="Arial,Helvetica,sans-serif" fill="'+col+'">'+el+'</text>';
     }
-    if(mi<n-1) content+='<text x="'+(ox+molW+molW/2)+'" y="'+(H/2+8)+'" text-anchor="middle" font-size="22" fill="#3a5888">+</text>';
+    if(mi<n-1) bonds+='<text x="'+(baseX+molW+molW/2)+'" y="'+(H/2+7)+'" text-anchor="middle" font-size="20" fill="#448">+</text>';
   }
-  svg.innerHTML=content;
+  svg.innerHTML=bg+bonds+aback+alabel;
 }
 
 // ─── DROP3D OVERLAY ────────────────────────────────────────────
@@ -1137,51 +1151,59 @@ function hideDrop3d(){document.getElementById('drop3d').style.display='none';}
   });
 })();
 
-// ─── MOBILE DRAWER ─────────────────────────────────────────────
+// ─── MOBILE DRAWER (top-half slide-down) ────────────────────
 var _dOpen=false;
 function openDrawer(){
   if(window.innerWidth>700) return;
   _dOpen=true;
-  document.getElementById('left').classList.add('open');
-  var btn=document.querySelector('#drawtoggle .dtbtn');
-  if(btn) btn.classList.add('active');
+  var lft=document.getElementById('left');
+  var tog=document.getElementById('drawtoggle');
+  if(lft) lft.classList.add('open');
+  if(tog) tog.classList.add('active');
 }
 function closeDrawer(){
   if(window.innerWidth>700) return;
   _dOpen=false;
-  document.getElementById('left').classList.remove('open');
-  var btn=document.querySelector('#drawtoggle .dtbtn');
-  if(btn) btn.classList.remove('active');
+  var lft=document.getElementById('left');
+  var tog=document.getElementById('drawtoggle');
+  if(lft) lft.classList.remove('open');
+  if(tog) tog.classList.remove('active');
 }
 function toggleDrawer(){
   if(window.innerWidth>700) return;
   if(_dOpen) closeDrawer(); else openDrawer();
 }
-function showDrawerSec(sec){
-  if(window.innerWidth>700) return;
-  var map={mol:['sec-mol'],log:['sec-hint','sec-leg','sec-log']};
-  ['sec-mol','sec-hint','sec-leg','sec-log'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
-  });
-  (map[sec]||[]).forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='';});
-  document.querySelectorAll('.stab').forEach(function(b){b.classList.toggle('active',b.dataset.sec===sec);});
-}
+function showDrawerSec(sec){} // no-op: all sections shown together
 function initMobile(){
   if(window.innerWidth>700) return;
-  // タッチで3D領域→ドロワーを閉じる (ただし反応バー上はNG)
-  var cv=document.getElementById('threecanvas');
-  if(cv) cv.addEventListener('click',function(){if(_dOpen)closeDrawer();});
+  // #sec-rxnを#rightの末尾に移動（反応バーとして常時表示）
+  var rxn=document.getElementById('sec-rxn');
+  var right=document.getElementById('right');
+  if(rxn&&right&&rxn.parentElement&&rxn.parentElement.id!=='right'){
+    right.appendChild(rxn);
+  }
+  // ドロワー内のsec-molにスクロール属性を付与
+  var secMol=document.getElementById('sec-mol');
+  if(secMol) secMol.style.touchAction='pan-y';
   closeDrawer();
-  showDrawerSec('mol');
 }
 window.addEventListener('resize',function(){
   if(window.innerWidth>700){
-    var lft=document.getElementById('left');
-    if(lft){lft.classList.remove('open');lft.style.cssText='';}
-    ['sec-mol','sec-hint','sec-leg','sec-log'].forEach(function(id){
-      var el=document.getElementById(id);if(el)el.style.cssText='';
-    });
-  } else { initMobile(); }
+    // #sec-rxnを#leftに戻す
+    var rxn=document.getElementById('sec-rxn');
+    var secMol=document.getElementById('sec-mol');
+    var left=document.getElementById('left');
+    if(rxn&&left&&rxn.parentElement&&rxn.parentElement.id!=='left'){
+      if(secMol&&secMol.nextSibling) left.insertBefore(rxn,secMol.nextSibling);
+      else if(left) left.appendChild(rxn);
+    }
+    // スタイルリセット
+    var lft2=document.getElementById('left');
+    if(lft2){lft2.classList.remove('open');lft2.style.cssText='';}
+  } else {
+    initMobile();
+  }
+});  } else { initMobile(); }
 });
 
 </script>
