@@ -293,6 +293,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   <div class="mi-name" id="mi-name"></div>
   <div class="mi-desc" id="mi-desc"></div>
   <div class="mi-rxn" id="mi-rxn"></div>
+  <button id="mi-del" style="margin-top:5px;padding:2px 7px;background:#1a2840;border:1px solid #304060;border-radius:5px;color:#c07080;font-size:.62em;cursor:pointer;width:100%;display:none">✕ 表示から削除</button>
 </div>
     <svg id="struct2d" xmlns="http://www.w3.org/2000/svg"></svg>
     <button id="viewtoggle" onclick="toggleView()">📐 構造式</button>
@@ -608,6 +609,7 @@ var ghost = document.getElementById('ghost');
 var gsEl   = document.getElementById('gs');
 var gnEl   = document.getElementById('gn');
 var tdKey = null, tdEl = null;
+var _suppressNextClick = false; // D&D後のsynthetic clickを防ぐ
 
 function makeDrag(el, key) {
   el.setAttribute('draggable','true');
@@ -642,9 +644,11 @@ function makeDrag(el, key) {
     var vwEl=document.getElementById('vwrap');
     var inVw=false;
     if(vwEl){var r=vwEl.getBoundingClientRect();inVw=t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom;}
-    if(sl){ var idx2=parseInt(sl.getAttribute('data-idx')); if(!isNaN(idx2)) putSlot(tdKey,idx2); }
-    else if(d3sl){ var idx2=parseInt(d3sl.getAttribute('data-idx')); if(!isNaN(idx2)){putSlot(tdKey,idx2);hideDrop3d();} }
-    else if(inVw){ var ei=slots.indexOf(null); putSlot(tdKey,ei!==-1?ei:slots.length-1); }
+    var _dropped=false;
+    if(sl){ var idx2=parseInt(sl.getAttribute('data-idx')); if(!isNaN(idx2)){putSlot(tdKey,idx2);_dropped=true;} }
+    else if(d3sl){ var idx2=parseInt(d3sl.getAttribute('data-idx')); if(!isNaN(idx2)){putSlot(tdKey,idx2);hideDrop3d();_dropped=true;} }
+    else if(inVw){ var ei=slots.indexOf(null); putSlot(tdKey,ei!==-1?ei:slots.length-1);_dropped=true; }
+    if(_dropped){ _suppressNextClick=true; setTimeout(function(){_suppressNextClick=false;},400); }
     tdKey=null; tdEl=null;
   });
 }
@@ -688,7 +692,7 @@ function initThree(){
   animate();
 }
 function resThree(){ var w=document.getElementById('vwrap'),wi=w.clientWidth,h=w.clientHeight; if(!wi||!h)return; renderer.setSize(wi,h); camera.aspect=wi/h; camera.updateProjectionMatrix(); }
-function animate(){ requestAnimationFrame(animate); if(!isDr&&!ltch&&molGroup.children.length>0) molGroup.rotation.y+=.004; renderer.render(scene,camera); updLbls(); }
+function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); updLbls(); }
 function updLbls(){
   var c=document.getElementById('atomlbls'),wp=document.getElementById('vwrap');
   var ls=c.querySelectorAll('.albl'),w=wp.clientWidth,h=wp.clientHeight;
@@ -711,7 +715,7 @@ function buildScene(keys){
       var a=mol.atoms[ai],ed=ELEM[a.e]||{color:0x808080,r:.35};
       var geo=new THREE.SphereGeometry(ed.r*1.25*sc,32,32);
       var mat=new THREE.MeshPhongMaterial({color:ed.color,shininess:120,specular:new THREE.Color(.6,.6,.6),emissive:new THREE.Color(ed.color).multiplyScalar(.06)});
-      var msh=new THREE.Mesh(geo,mat); msh.position.set(a.p[0]*sc+ox,a.p[1]*sc,a.p[2]*sc); msh.userData.e=a.e;
+      var msh=new THREE.Mesh(geo,mat); msh.position.set(a.p[0]*sc+ox,a.p[1]*sc,a.p[2]*sc); msh.userData.e=a.e; msh.userData.molKey=valid[mi];
       molGroup.add(msh); atms.push(msh);
     }
     for(var bi=0;bi<mol.bonds.length;bi++){
@@ -813,6 +817,7 @@ function refreshSlots(){
 
 // ─── CLICK / SELECT ───────────────────────────────────────────
 function clickMol(key,card){
+  if(_suppressNextClick){_suppressNextClick=false;return;} // D&D後の誤クリックを無視
   var idx=slots.indexOf(null);
   if(idx!==-1) slots[idx]=key; else slots[1]=key;
   refreshSlots(); buildScene(slots.filter(function(s){return s;}));
@@ -820,6 +825,7 @@ function clickMol(key,card){
   if(window.innerWidth<=700 && !_dOpen) toast(MOLS[key].sym+' をスロットに追加！');
 }
 function selProd(key){
+  if(_suppressNextClick){_suppressNextClick=false;return;} // D&D後の誤クリックを無視
   var idx=slots.indexOf(null);
   if(idx!==-1) slots[idx]=key; else slots[1]=key;
   refreshSlots(); buildScene(slots.filter(function(s){return s;}));
@@ -972,13 +978,32 @@ buildScene(['H']);
 // ─── 3D/構造式クリックで説明オーバーレイ表示 ───────────────────
 document.getElementById('vwrap').addEventListener('click', function(e){
   if(!_curKeys||!_curKeys.length) return;
-  // オーバーレイ操作・ボタン類は除外
   var skip=['drop3d','sec-rxn','drawtoggle','viewtoggle','molinfo','mollbl'];
   for(var si=0;si<skip.length;si++){
     var el=document.getElementById(skip[si]);
     if(el&&el.contains(e.target)) return;
   }
-  if(MOLS[_curKeys[0]]) showMolInfo(_curKeys[0],null);
+  var clickedKey=null;
+  if(_view==='3d'&&renderer){
+    // Raycasterで原子メッシュを特定
+    var cv=document.getElementById('threecanvas');
+    var rect=cv.getBoundingClientRect();
+    var mouse=new THREE.Vector2(
+      ((e.clientX-rect.left)/rect.width)*2-1,
+      -((e.clientY-rect.top)/rect.height)*2+1);
+    var rc=new THREE.Raycaster();
+    rc.setFromCamera(mouse,camera);
+    var hits=rc.intersectObjects(atms,false);
+    if(hits.length>0&&hits[0].object.userData.molKey) clickedKey=hits[0].object.userData.molKey;
+    else if(_curKeys.length) clickedKey=_curKeys[0];
+  } else if(_view==='2d'){
+    var svg=document.getElementById('struct2d');
+    var rect=svg.getBoundingClientRect();
+    var mi2=Math.floor((e.clientX-rect.left)/(rect.width/(_curKeys.length||1)));
+    mi2=Math.max(0,Math.min(_curKeys.length-1,mi2));
+    clickedKey=_curKeys[mi2];
+  }
+  if(clickedKey&&MOLS[clickedKey]) showMolInfo(clickedKey,null);
 });
 if(window.innerWidth<=700) initMobile();
 
@@ -1026,6 +1051,13 @@ var MOL_INFO={
 };
 
 var _molinfoCollapsed=false;
+function removeFromDisplay(key){
+  for(var i=0;i<slots.length;i++){ if(slots[i]===key) slots[i]=null; }
+  refreshSlots();
+  var nk=_curKeys.filter(function(k){return k!==key;});
+  buildScene(nk);
+  document.getElementById('molinfo').classList.remove('show');
+}
 function showMolInfo(key,rxn){
   var el=document.getElementById('molinfo');
   var m=MOLS[key]; if(!m) return;
@@ -1061,6 +1093,12 @@ function showMolInfo(key,rxn){
       if(rx) rx.style.display=_molinfoCollapsed?'none':(rxn?'block':'none');
       if(tg) tg.textContent=_molinfoCollapsed?'▶':'▼';
     };
+  }
+  // 削除ボタンに key を紐付け
+  var delBtn=document.getElementById('mi-del');
+  if(delBtn){
+    delBtn.style.display='';
+    delBtn.onclick=function(ev){ev.stopPropagation();removeFromDisplay(key);};
   }
   el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
 }
