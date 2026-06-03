@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>🧪 化学反応ラボ</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,14 +41,14 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 .rzone{background:#09142a;border:1px solid #1a2e50;border-radius:12px;padding:10px}
 /* ★ CSS grid で + が消えない固定レイアウト ★ */
 .srow{display:grid;grid-template-columns:1fr 24px 1fr;gap:4px;align-items:center;margin-bottom:10px}
-.slot{background:#0d1d38;border:2px dashed #2a4070;border-radius:9px;min-height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;padding:5px 3px;overflow:hidden}
+.slot{background:#0d1d38;border:2px dashed #2a4070;border-radius:9px;min-height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;padding:5px 3px;overflow:visible}
 .slot.filled{border-style:solid;border-color:#30a060;background:#0a2018}
 .slot.dragover{border-color:#60e0a0!important;background:#102a1a!important;box-shadow:0 0 14px rgba(60,220,120,.45);transform:scale(1.05)}
 .shint{font-size:.6em;color:#304060;text-align:center;line-height:1.4}
 .ssym{font-size:1em;font-weight:bold;color:#70d0ff;word-break:break-all;text-align:center;line-height:1.1;width:100%}
 .ssym.sm{font-size:.75em}
 .snm{font-size:.55em;color:#50708a;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%}
-.srem{position:absolute;top:-7px;right:-7px;width:18px;height:18px;background:#c03040;border-radius:50%;font-size:.7em;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-weight:bold;z-index:5}
+.srem{position:absolute;top:-5px;right:-5px;width:14px;height:14px;background:rgba(8,14,28,.85);border:1px solid #405070;border-radius:3px;font-size:.65em;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c08090;font-weight:bold;z-index:5;line-height:1}
 .plus{text-align:center;color:#3a5888;font-size:1.1em;font-weight:bold}
 /* Conditions */
 .crow{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:8px}
@@ -158,9 +158,10 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   #main{display:flex;flex-direction:column;position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden}
   /* ドロワー：閉=0px、開=44vh */
   #left{flex-shrink:0;height:0;overflow:hidden;background:rgba(8,16,34,.96);
+    visibility:hidden;
     transition:height .25s cubic-bezier(.4,0,.2,1);
     display:flex;flex-direction:column;gap:6px}
-  #left.open{height:44vh;overflow-y:auto;border-bottom:1px solid #1a3060;padding:8px}
+  #left.open{height:44vh;overflow-y:auto;border-bottom:1px solid #1a3060;padding:8px;visibility:visible}
   /* 3D + 反応バー */
   #right{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
   #vwrap{flex:1;min-height:0;position:relative}
@@ -180,14 +181,14 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   #sec-leg{display:none!important}
   #sec-tabs{display:flex!important;flex-shrink:0;gap:4px;margin-bottom:4px}
   #left #sec-hint,#left #sec-log{display:none}
-  /* 物質グリッド：3列 */
-  .mgrid{grid-template-columns:repeat(3,1fr);gap:3px}
+  /* 物質グリッド：2列 */
+  .mgrid{grid-template-columns:repeat(2,1fr);gap:4px}
   #sec-mol{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
   /* 反応ゾーン compact */
   .srow{gap:2px}
   .slot{min-height:52px}
   .ssym{font-size:.85em}.snm{font-size:.48em}
-  .srem{width:16px;height:16px;font-size:.65em}
+  .srem{width:13px;height:13px;font-size:.6em}
   .crow{grid-template-columns:repeat(5,1fr);gap:3px}
   .cbtn{padding:7px 2px 5px}
   .cico{font-size:1em}.clbl{font-size:.55em}
@@ -198,7 +199,9 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   /* Header always visible on top */
   #hdr{position:fixed;top:0;left:0;right:0;z-index:999}
   /* sec-rxn overlays vwrap (set by initMobile) */
-  #vwrap>#sec-rxn{position:absolute;bottom:0;left:0;right:0;background:transparent!important;border-top:none;padding:3px 6px 6px;z-index:15}
+  #vwrap>#sec-rxn{position:absolute;bottom:0;left:0;right:0;
+    background:transparent!important;border-top:none;
+    padding:3px 6px calc(env(safe-area-inset-bottom,0px) + 10px);z-index:15}
   #vwrap>#sec-rxn .sec{display:none}
   #vwrap>#sec-rxn .rzone{background:none;padding:2px 0}
   #vwrap>#sec-rxn .crow{grid-template-columns:repeat(5,1fr);gap:2px;margin-bottom:2px}
@@ -214,7 +217,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   #sec-mol::-webkit-scrollbar-thumb{background:#2a4878;border-radius:4px}
   /* Compact mol cards for 3 cols */
   .mcard{padding:4px 3px}
-  .mcard-line{font-size:.62em}
+  .mcard-line{font-size:.68em}
 }
 </style>
 </head>
@@ -609,7 +612,10 @@ function makeDrag(el, key) {
     gsEl.textContent=m.sym; gnEl.textContent=m.ja;
     movGhost(e.touches[0]); ghost.style.display='block';
   },{passive:true});
-  el.addEventListener('touchmove', function(e){ movGhost(e.touches[0]); e.preventDefault(); },{passive:false});
+  el.addEventListener('touchmove', function(e){
+    if(!tdKey) return;  // D&D開始前はスクロール優先
+    movGhost(e.touches[0]); e.preventDefault();
+  },{passive:false});
   el.addEventListener('touchend', function(e){
     ghost.style.display='none';
     if(tdEl) tdEl.classList.remove('dragging');
@@ -1052,6 +1058,40 @@ function addLog(rxn){
   log.insertBefore(item,log.firstChild);
 }
 
+// ─── 2D best projection helper ───────────────────────────────
+function get2Dpos(atoms){
+  // 複数の投影方向を試して、2D上で最も原子が散らばる方向を選択
+  var views=[
+    [[1,0,0],[0,1,0]],           // XY
+    [[1,0,0],[0,0,1]],           // XZ
+    [[0,1,0],[0,0,1]],           // YZ
+    [[0.866,0.5,0],[0,0,1]],     // 30° rot XY + Z
+    [[0.866,-0.5,0],[0,0,1]],    // -30° rot XY + Z
+    [[1,0,0],[0,0.707,0.707]],   // X + 45° YZ
+    [[1,0,0],[0,0.707,-0.707]],  // X + -45° YZ
+    [[0.707,0,0.707],[0,1,0]],   // 45° XZ + Y
+    [[0.577,0.577,0.577],[0.816,-0.408,-0.408]]  // (1,1,1) view
+  ];
+  var bestScore=-1,bestPts=null;
+  for(var vi=0;vi<views.length;vi++){
+    var u=views[vi][0],v=views[vi][1];
+    var pts=atoms.map(function(a){
+      return{x:a.p[0]*u[0]+a.p[1]*u[1]+a.p[2]*u[2],
+             y:a.p[0]*v[0]+a.p[1]*v[1]+a.p[2]*v[2]};
+    });
+    var minD2=Infinity;
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        var d2=dx*dx+dy*dy;
+        if(d2<minD2) minD2=d2;
+      }
+    }
+    if(minD2>bestScore){bestScore=minD2;bestPts=pts;}
+  }
+  return bestPts||atoms.map(function(a){return{x:a.p[0],y:a.p[1]};});
+}
+
 // ─── 3D / 2D TOGGLE ───────────────────────────────────────────
 var _view='3d';
 function toggleView(){
@@ -1091,14 +1131,18 @@ function drawStruct2d(keys){
       continue;
     }
     var atoms=mol.atoms;
-    var xs=atoms.map(function(a){return a.p[0];});
-    var ys=atoms.map(function(a){return a.p[1];});
+    // 最適な2D投影を選択（XY直投影だと原子が重なる3D分子に対応）
+    var pts2d=get2Dpos(atoms);
+    var xs=pts2d.map(function(p){return p.x;});
+    var ys=pts2d.map(function(p){return p.y;});
     var xmn=Math.min.apply(null,xs),xmx=Math.max.apply(null,xs);
     var ymn=Math.min.apply(null,ys),ymx=Math.max.apply(null,ys);
     var pad=36;
     var sxr=xmx>xmn?(molW-2*pad)/(xmx-xmn):50;
     var syr=ymx>ymn?(H-2*pad)/(ymx-ymn):50;
-    var sc=Math.min(sxr,syr,58);
+    // 原子数が多い分子はスケールを抑えて重なりを減らす
+    var scMax=atoms.length>6?42:(atoms.length>4?50:58);
+    var sc=Math.min(sxr,syr,scMax);
     var cbx=baseX+molW/2-(xmn+xmx)/2*sc;
     var cby=H/2+(ymn+ymx)/2*sc;
     var px=function(x){return cbx+x*sc;};
@@ -1106,8 +1150,7 @@ function drawStruct2d(keys){
     // ── bonds ──
     for(var bi=0;bi<mol.bonds.length;bi++){
       var b=mol.bonds[bi];
-      var a0=atoms[b[0]],a1=atoms[b[1]];
-      var bx0=px(a0.p[0]),by0=py(a0.p[1]),bx1=px(a1.p[0]),by1=py(a1.p[1]);
+      var bx0=px(pts2d[b[0]].x),by0=py(pts2d[b[0]].y),bx1=px(pts2d[b[1]].x),by1=py(pts2d[b[1]].y);
       var ord=b[2];
       var ddx=bx1-bx0,ddy=by1-by0,blen=Math.sqrt(ddx*ddx+ddy*ddy)||1;
       var npx=-ddy/blen,npy=ddx/blen;
@@ -1119,14 +1162,14 @@ function drawStruct2d(keys){
     }
     // ── atom labels ──
     for(var ai=0;ai<atoms.length;ai++){
-      var at=atoms[ai];
-      var ax=px(at.p[0]),ay=py(at.p[1]);
-      var el=at.e,col=ACOL[el]||'#111';
-      var fs=el.length<=1?13:11;
+      var ax=px(pts2d[ai].x),ay=py(pts2d[ai].y);
+      var el=atoms[ai].e,col=ACOL[el]||'#e0e0e0';
+      // 原子数が多い分子はフォントを小さく
+      var fs=(el.length<=1?13:11)*(atoms.length>7?0.75:(atoms.length>5?0.88:1));
+      fs=Math.round(fs);
       var bw=el.length===1?fs*1.35:el.length*fs*0.72+4;
       var bh=fs*1.55;
-      // 白い背景で結合線を「消す」
-      aback+='<rect x="'+fmt(ax-bw/2)+'" y="'+fmt(ay-bh*0.55)+'" width="'+fmt(bw)+'" height="'+fmt(bh)+'" fill="#07101f" rx="1"/>';
+      aback+='<rect x="'+fmt(ax-bw/2)+' y="'+fmt(ay-bh*0.55)+'" width="'+fmt(bw)+'" height="'+fmt(bh)+'" fill="#07101f" rx="1"/>';
       alabel+='<text x="'+fmt(ax)+'" y="'+fmt(ay+fs*0.4)+'" text-anchor="middle" font-size="'+fs+'" font-weight="bold" font-family="Arial,Helvetica,sans-serif" fill="'+col+'">'+el+'</text>';
     }
     if(mi<n-1) bonds+='<text x="'+(baseX+molW)+'" y="'+(H/2+7)+'" text-anchor="middle" font-size="20" fill="#5080d0">+</text>';
