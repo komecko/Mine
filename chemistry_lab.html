@@ -859,8 +859,8 @@ function doReaction(){
       setTimeout(function(){
         var cards=document.querySelectorAll('.mcard');
         for(var i=0;i<cards.length;i++){
-          var sym=cards[i].querySelector('.msym');
-          if(sym&&newMols.some(function(k){return MOLS[k].sym===sym.textContent;})){
+          var sym=cards[i].querySelector('.mcard-line');
+          if(sym&&newMols.some(function(k){return sym.textContent.indexOf(MOLS[k].sym)===0;})){
             cards[i].classList.add('newmol');
             setTimeout(function(c){return function(){c.classList.remove('newmol');};}(cards[i]),1000);
           }
@@ -1203,8 +1203,8 @@ window.addEventListener('resize',function(){
   } else {
     initMobile();
   }
-});  } else { initMobile(); }
 });
+if (window.innerWidth <= 700) { initMobile(); }
 
 </script>
 </body>
