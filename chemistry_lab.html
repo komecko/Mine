@@ -920,7 +920,7 @@ function doReaction(){
     if(prods.length>0) showMolInfo(prods[0],rxn);
     saveState();
     if(window.innerWidth<=700) closeDrawer();
-    slots=[null,null]; refreshSlots();
+    slots=[null,null,null]; refreshSlots();
     var noteHtml=rxn.note?('<div class="snote"><b>⚖️ 反応の量比</b><br>'+rxn.note+'</div>'):'';
     document.getElementById('info').innerHTML=
       '<div class="req" style="animation:fi .3s">'+rxn.eq+'</div>'+
@@ -1052,11 +1052,22 @@ var MOL_INFO={
 
 var _molinfoCollapsed=false;
 function removeFromDisplay(key){
-  for(var i=0;i<slots.length;i++){ if(slots[i]===key) slots[i]=null; }
+  // スロット配列が2要素になっている場合もカバーするよう正規化
+  while(slots.length<3) slots.push(null);
+  var found=false;
+  for(var i=0;i<slots.length;i++){ if(slots[i]===key){slots[i]=null;found=true;} }
   refreshSlots();
-  var nk=_curKeys.filter(function(k){return k!==key;});
+  // スマホ: スロット行を一時的に表示して削除確認
+  if(window.innerWidth<=700){
+    var srow=document.getElementById('srow');
+    if(srow){ srow.classList.add('drag-active');
+      setTimeout(function(){srow.classList.remove('drag-active');},1500); }
+  }
+  var nk=(_curKeys||[]).filter(function(k){return k!==key;});
   buildScene(nk);
   document.getElementById('molinfo').classList.remove('show');
+  var molName=(MOLS[key]&&MOLS[key].sym)||key;
+  toast(molName+(found?' をスロットと表示から削除しました':' を表示から削除しました'));
 }
 function showMolInfo(key,rxn){
   var el=document.getElementById('molinfo');
