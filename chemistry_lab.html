@@ -201,7 +201,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   /* sec-rxn overlays vwrap (set by initMobile) */
   #vwrap>#sec-rxn{position:absolute;bottom:0;left:0;right:0;
     background:transparent!important;border-top:none;
-    padding:3px 6px calc(env(safe-area-inset-bottom,0px) + 10px);z-index:15}
+    padding:3px 6px calc(env(safe-area-inset-bottom,0px) + 58px);z-index:15}
   #vwrap>#sec-rxn .sec{display:none}
   #vwrap>#sec-rxn .rzone{background:none;padding:2px 0}
   #vwrap>#sec-rxn .crow{grid-template-columns:repeat(5,1fr);gap:2px;margin-bottom:2px}
@@ -210,7 +210,8 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
   #vwrap>#sec-rxn .clbl{font-size:.42em}
   #vwrap>#sec-rxn .rbtn{padding:5px;font-size:.65em;letter-spacing:.3px;margin-top:1px}
   #vwrap>#sec-rxn .slot{min-height:38px}
-  #vwrap>#sec-rxn .srow{gap:2px;margin-bottom:4px}
+  #vwrap>#sec-rxn .srow{gap:2px;margin-bottom:4px;display:none}
+  #vwrap>#sec-rxn .srow.drag-active{display:grid}
   /* Thicker scrollbar */
   #sec-mol::-webkit-scrollbar{width:8px}
   #sec-mol::-webkit-scrollbar-track{background:#0d1830;border-radius:4px}
@@ -237,7 +238,7 @@ body{font-family:'Segoe UI','Hiragino Kaku Gothic Pro',sans-serif;background:#07
 
 <div id="main">
 <div id="left">
-  <div id="sec-tabs"><button class="stab active" data-sec="mol" onclick="showDrawerSec('mol')">🔬 物質</button><button class="stab" data-sec="log" onclick="showDrawerSec('log')">📖 記録</button></div>
+  <div id="sec-tabs"><button class="stab active" data-sec="mol" onclick="showDrawerSec('mol')">🔬 物質</button><button class="stab" data-sec="log" onclick="showDrawerSec('log')">📖 記録</button><button class="stab" data-sec="hint" onclick="showDrawerSec('hint')">💡 ヒント</button></div>
   <div id="sec-mol">
     <div class="sec">🔬 発見した物質（<span id="acnt">7</span>種 / 全<span id="totalMols">?</span>種）</div>
     <div class="swrap">
@@ -424,7 +425,7 @@ var MOLS = {
 'NaClO':{sym:'NaClO',ja:'次亜塩素酸ナトリウム',atoms:[{e:'Na',p:[-1.8,0,0]},{e:'O',p:[0,0,0]},{e:'Cl',p:[1.1,0,0]}],bonds:[[0,1,1],[1,2,1]]},
 'NaNO3':{sym:'NaNO₃',ja:'硝酸ナトリウム',atoms:[{e:'Na',p:[-2.5,0,0]},{e:'N',p:[0,0,0]},{e:'O',p:[0,1.25,0]},{e:'O',p:[1.08,-0.62,0]},{e:'O',p:[-1.08,-0.62,0]}],bonds:[[1,2,2],[1,3,1],[1,4,1]]},
 'Na2S':{sym:'Na₂S',ja:'硫化ナトリウム',atoms:[{e:'Na',p:[-2.0,0,0]},{e:'S',p:[0,0,0]},{e:'Na',p:[2.0,0,0]}],bonds:[[0,1,1],[1,2,1]]},
-'Fe2O3':{sym:'Fe₂O₃',ja:'酸化鉄(III)（赤さびの主成分）',atoms:[{e:'Fe',p:[-1.4,0.5,0]},{e:'Fe',p:[1.4,0.5,0]},{e:'O',p:[0,0.5,0]},{e:'O',p:[-0.9,-0.9,0]},{e:'O',p:[0.9,-0.9,0]}],bonds:[[0,2,1],[0,3,1],[1,2,1],[1,4,1],[0,4,1]]},
+'Fe2O3':{sym:'Fe₂O₃',ja:'酸化鉄(III)（赤さびの主成分）',atoms:[{e:'Fe',p:[-1.0,0,0]},{e:'Fe',p:[1.0,0,0]},{e:'O',p:[0,1.0,0]},{e:'O',p:[0,-0.5,0.9]},{e:'O',p:[0,-0.5,-0.9]}],bonds:[[0,2,1],[1,2,1],[0,3,1],[1,3,1],[0,4,1],[1,4,1]]},
 'Fe3O4':{sym:'Fe₃O₄',ja:'四酸化三鉄（磁鉄鉱）',atoms:[{e:'Fe',p:[-2.2,0,0]},{e:'Fe',p:[0,0.8,0]},{e:'Fe',p:[2.2,0,0]},{e:'O',p:[-1.1,0.9,0]},{e:'O',p:[-1.1,-0.9,0]},{e:'O',p:[1.1,0.9,0]},{e:'O',p:[1.1,-0.9,0]}],bonds:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,5,1],[2,6,1],[1,4,1],[1,6,1]]},
 'CaO':{sym:'CaO',ja:'酸化カルシウム（生石灰）',atoms:[{e:'Ca',p:[-0.95,0,0]},{e:'O',p:[0.95,0,0]}],bonds:[[0,1,1]]},
 'CaOH2':{sym:'Ca(OH)₂',ja:'水酸化カルシウム（消石灰）',atoms:[{e:'Ca',p:[0,0,0]},{e:'O',p:[0,1.8,0]},{e:'O',p:[0,-1.8,0]},{e:'H',p:[0.95,2.4,0]},{e:'H',p:[0.95,-2.4,0]}],bonds:[[0,1,1],[0,2,1],[1,3,1],[2,4,1]]},
@@ -954,6 +955,17 @@ document.getElementById('sclear').addEventListener('click', function(){
 });
 initThree();
 buildScene(['H']);
+// ─── 3D/構造式クリックで説明オーバーレイ表示 ───────────────────
+document.getElementById('vwrap').addEventListener('click', function(e){
+  if(!_curKeys||!_curKeys.length) return;
+  // オーバーレイ操作・ボタン類は除外
+  var skip=['drop3d','sec-rxn','drawtoggle','viewtoggle','molinfo','mollbl'];
+  for(var si=0;si<skip.length;si++){
+    var el=document.getElementById(skip[si]);
+    if(el&&el.contains(e.target)) return;
+  }
+  if(MOLS[_curKeys[0]]) showMolInfo(_curKeys[0],null);
+});
 if(window.innerWidth<=700) initMobile();
 
 // ─── CURRENT DISPLAY ──────────────────────────────────────────
@@ -1186,8 +1198,17 @@ function updateDrop3dSlots(){
     else{el.textContent='スロット'+(i+1);el.classList.remove('filled');}
   }
 }
-function showDrop3d(){document.getElementById('drop3d').style.display='flex';updateDrop3dSlots();}
-function hideDrop3d(){document.getElementById('drop3d').style.display='none';}
+function showDrop3d(){
+  document.getElementById('drop3d').style.display='flex';
+  var srow=document.getElementById('srow');
+  if(srow&&window.innerWidth<=700) srow.classList.add('drag-active');
+  updateDrop3dSlots();
+}
+function hideDrop3d(){
+  document.getElementById('drop3d').style.display='none';
+  var srow=document.getElementById('srow');
+  if(srow&&window.innerWidth<=700) srow.classList.remove('drag-active');
+}
 // drop zone setup for d3slots
 (function(){
   for(var i=0;i<3;i++){
@@ -1248,8 +1269,10 @@ function showDrawerSec(sec){
   if(at) at.classList.add('active');
   var secMol=document.getElementById('sec-mol');
   var secLog=document.getElementById('sec-log');
+  var secHint=document.getElementById('sec-hint');
   if(secMol) secMol.style.display=sec==='mol'?'':'none';
   if(secLog) secLog.style.display=sec==='log'?'':'none';
+  if(secHint) secHint.style.display=sec==='hint'?'':'none';
 }
 function initMobile(){
   if(window.innerWidth>700) return;
