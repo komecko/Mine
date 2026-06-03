@@ -639,8 +639,19 @@ function makeDrag(el, key) {
     if(!tdKey){ tdKey=null; tdEl=null; return; }
     var t=e.changedTouches[0];
     var tgt=document.elementFromPoint(t.clientX,t.clientY);
-    var sl=tgt&&(tgt.classList.contains('slot')?tgt:(tgt.parentElement&&tgt.parentElement.classList.contains('slot')?tgt.parentElement:null));
-    var d3sl=tgt&&(tgt.classList.contains('d3slot')?tgt:(tgt.parentElement&&tgt.parentElement.classList.contains('d3slot')?tgt.parentElement:null));
+    // closest を使って何階層深くても .slot を検出
+    var sl=null;
+    if(tgt){
+      if(tgt.classList&&tgt.classList.contains('slot')) sl=tgt;
+      else if(tgt.closest) sl=tgt.closest('.slot');
+      else { var _p=tgt.parentElement; while(_p){if(_p.classList&&_p.classList.contains('slot')){sl=_p;break;} _p=_p.parentElement;} }
+    }
+    var d3sl=null;
+    if(tgt){
+      if(tgt.classList&&tgt.classList.contains('d3slot')) d3sl=tgt;
+      else if(tgt.closest) d3sl=tgt.closest('.d3slot');
+      else { var _p2=tgt.parentElement; while(_p2){if(_p2.classList&&_p2.classList.contains('d3slot')){d3sl=_p2;break;} _p2=_p2.parentElement;} }
+    }
     var vwEl=document.getElementById('vwrap');
     var inVw=false;
     if(vwEl){var r=vwEl.getBoundingClientRect();inVw=t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom;}
@@ -657,7 +668,7 @@ function makeDropZone(el, idx){
   el.setAttribute('data-idx', idx);
   el.addEventListener('dragover', function(e){ if(!dragKey)return; e.preventDefault(); e.dataTransfer.dropEffect='copy'; el.classList.add('dragover'); });
   el.addEventListener('dragleave', function(){ el.classList.remove('dragover'); });
-  el.addEventListener('drop', function(e){ e.preventDefault(); el.classList.remove('dragover'); var k=e.dataTransfer.getData('text/plain')||dragKey; if(k) putSlot(k,idx); });
+  el.addEventListener('drop', function(e){ e.preventDefault(); e.stopPropagation(); el.classList.remove('dragover'); var k=e.dataTransfer.getData('text/plain')||dragKey; if(k) putSlot(k,idx); });
 }
 function putSlot(key, idx){ slots[idx]=key; refreshSlots(); buildScene(slots.filter(function(s){return s;})); }
 
