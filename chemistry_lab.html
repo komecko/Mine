@@ -761,6 +761,26 @@ function buildScene(keys){
   document.getElementById('mollbl').textContent=valid.map(function(k){return MOLS[k].sym;}).join(' + ')+' — ドラッグで回転';
 }
 
+// ─── 自然順ソート (H < H2 < H2O < HCl) ────────────────────────
+function molSortCmp(a, b){
+  // 文字列をアルファベット列と数字列に分割
+  var re=/(\d+)/g;
+  var ca=a.split(re).filter(Boolean);
+  var cb=b.split(re).filter(Boolean);
+  for(var i=0;i<Math.max(ca.length,cb.length);i++){
+    if(i>=ca.length) return -1; // a が短い → a < b
+    if(i>=cb.length) return 1;  // b が短い → a > b
+    var na=parseInt(ca[i]),nb=parseInt(cb[i]);
+    var an=!isNaN(na)&&ca[i].trim()!=='';
+    var bn=!isNaN(nb)&&cb[i].trim()!=='';
+    if(an&&bn){ if(na!==nb) return na-nb; }       // 両方数値 → 数値比較
+    else if(an&&!bn){ return -1; }                  // a が数値、b が文字 → a 先
+    else if(!an&&bn){ return 1; }                   // a が文字、b が数値 → b 先
+    else{ var c=ca[i].toLowerCase().localeCompare(cb[i].toLowerCase()); if(c!==0) return c; }
+  }
+  return 0;
+}
+
 // ─── GRID ─────────────────────────────────────────────────────
 function refreshGrid(){
   var inp=document.getElementById('search');
@@ -771,6 +791,7 @@ function refreshGrid(){
   grid.innerHTML='';
   var allKeys=Object.keys(MOLS);
   var gridKeys=allKeys.filter(function(k){ return unlockedMols[k]; });
+  gridKeys.sort(molSortCmp); // 自然順ソート
   if(q) gridKeys=gridKeys.filter(function(k){ var m=MOLS[k]; return ns(m.sym).indexOf(q)!==-1||( m.ja&&m.ja.toLowerCase().indexOf(q.replace(/[0-9]/g,''))!==-1)||(m.ja&&m.ja.toLowerCase().indexOf(raw.toLowerCase())!==-1); });
   var shown=0;
   for(var i=0;i<gridKeys.length;i++){
