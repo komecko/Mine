@@ -1270,9 +1270,9 @@ function showDrawerSec(sec){
   var secMol=document.getElementById('sec-mol');
   var secLog=document.getElementById('sec-log');
   var secHint=document.getElementById('sec-hint');
-  if(secMol) secMol.style.display=sec==='mol'?'':'none';
-  if(secLog) secLog.style.display=sec==='log'?'':'none';
-  if(secHint) secHint.style.display=sec==='hint'?'':'none';
+  if(secMol) secMol.style.display=sec==='mol'?'block':'none';
+  if(secLog) secLog.style.display=sec==='log'?'block':'none';
+  if(secHint) secHint.style.display=sec==='hint'?'block':'none';
 }
 function initMobile(){
   if(window.innerWidth>700) return;
