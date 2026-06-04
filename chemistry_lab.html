@@ -798,7 +798,7 @@ function refreshGrid(){
     var key=gridKeys[i],mol=MOLS[key];
     if(!mol||!mol.atoms||!mol.atoms.length) continue;
     var card=document.createElement('div'); card.className='mcard';
-    var sn=mol.ja||'';
+    var sn=(mol.ja||'').replace(/（[^）]*）/g,'').trim(); // 括弧内の説明を除去
     card.innerHTML='<div class="mcard-line">'+mol.sym+'　'+sn+'</div>';
     card.title=mol.sym+'（'+sn+'）';
     (function(k,c){ c.addEventListener('click',function(){ clickMol(k,c); }); makeDrag(c,k); })(key,card);
